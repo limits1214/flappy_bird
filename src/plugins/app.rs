@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_framepace::{FramepaceSettings, Limiter};
+use bevy_mod_picking::DefaultPickingPlugins;
 
 use crate::{constant::TARGET_FRAME_RATE, states::States};
 
@@ -13,6 +14,7 @@ impl Plugin for AppPlugin {
         // 외부 설정
         app
             .add_plugins(bevy_framepace::FramepacePlugin)
+            .add_plugins(DefaultPickingPlugins)
             .insert_resource(FramepaceSettings{
                 limiter: Limiter::from_framerate(TARGET_FRAME_RATE)
             });

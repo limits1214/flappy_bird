@@ -5,3 +5,5 @@ pub mod guide;
 pub mod result;
 pub mod mask;
 pub mod resize;
+pub mod bird;
+pub mod ground;
