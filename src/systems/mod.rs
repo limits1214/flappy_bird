@@ -4,3 +4,4 @@ pub mod game;
 pub mod guide;
 pub mod result;
 pub mod mask;
+pub mod resize;

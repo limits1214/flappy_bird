@@ -11,3 +11,4 @@ timeline
 5. assetloader 추가 및 asset 노가다
 6. asset gen 아틀라스 추가
 7. main plugin 추가
+8. resize plugin

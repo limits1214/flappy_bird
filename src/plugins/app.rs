@@ -3,7 +3,7 @@ use bevy_framepace::{FramepaceSettings, Limiter};
 
 use crate::{constant::TARGET_FRAME_RATE, states::States};
 
-use super::{assets::AssetPlugin, main_menu::MainMenuPlugin, mask::MaskPlugin};
+use super::{assets::AssetPlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin};
 
 /// 공통 게임 설정
 pub struct AppPlugin;
@@ -21,6 +21,7 @@ impl Plugin for AppPlugin {
         app
             .insert_state(States::AssetsLoading)
             .add_plugins(MaskPlugin)
+            .add_plugins(ResizePlugin)
             .add_plugins(AssetPlugin)
             .add_plugins(MainMenuPlugin);
 

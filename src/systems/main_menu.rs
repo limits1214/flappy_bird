@@ -1,14 +1,16 @@
 use bevy::prelude::*;
 
-use crate::resources::assets::FlappyBirdAssets;
+use crate::{components::resize::Resizable, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets};
 
 pub fn enter(
     mut commands: Commands,
-    fb_assets: Res<FlappyBirdAssets>
+    fb_assets: Res<FlappyBirdAssets>,
+    mut ew_resize: EventWriter<ResizeEvent>,
 ) {
     info!("main_menu_enter");
     let bg = (
         Name::new("bg"),
+        Resizable,
         SpriteBundle {
             texture: fb_assets.background_day.clone(),
             ..default()
@@ -35,6 +37,8 @@ pub fn enter(
             bird
         );
     });
+
+    ew_resize.send(ResizeEvent);
 }
 
 pub fn exit() {
