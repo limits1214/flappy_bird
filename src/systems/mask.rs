@@ -1,6 +1,6 @@
 use bevy::{color::palettes::css, prelude::*, sprite::MaterialMesh2dBundle};
 
-use crate::{components::{mask::{Mask, MaskParent, MaskSide}, resize::Resizable}, constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH}};
+use crate::{components::{mask::{Mask, MaskParent, MaskSide}, resize::Resizable}, constant::{MASK_Z_INDEX, ORIGINAL_HEIGHT, ORIGINAL_WIDTH}};
 
 pub fn spawn_mask(
     mut commands: Commands,
@@ -9,7 +9,7 @@ pub fn spawn_mask(
 ) {
     let mask_small = 200.;
     let mask_large = 600.;
-    let mask_z = 10.;
+    let mask_z = MASK_Z_INDEX;
     let left = (
         Name::new("left_mask"),
         Mask(MaskSide::Left),

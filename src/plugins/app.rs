@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_framepace::{FramepaceSettings, Limiter};
 use bevy_mod_picking::DefaultPickingPlugins;
 
-use crate::{constant::TARGET_FRAME_RATE, states::States};
+use crate::{constant::TARGET_FRAME_RATE, states::{Assets, States}};
 
 use super::{assets::AssetPlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin};
 
@@ -21,7 +21,6 @@ impl Plugin for AppPlugin {
 
         // 내부 설정
         app
-            .insert_state(States::AssetsLoading)
             .add_plugins(MaskPlugin)
             .add_plugins(ResizePlugin)
             .add_plugins(AssetPlugin)
