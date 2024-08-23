@@ -4,7 +4,7 @@ use bevy_mod_picking::DefaultPickingPlugins;
 
 use crate::{constant::TARGET_FRAME_RATE, states::{Assets, States}};
 
-use super::{assets::AssetPlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin};
+use super::{assets::AssetPlugin, guide::GuidePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin};
 
 /// 공통 게임 설정
 pub struct AppPlugin;
@@ -24,7 +24,8 @@ impl Plugin for AppPlugin {
             .add_plugins(MaskPlugin)
             .add_plugins(ResizePlugin)
             .add_plugins(AssetPlugin)
-            .add_plugins(MainMenuPlugin);
+            .add_plugins(MainMenuPlugin)
+            .add_plugins(GuidePlugin);
 
         // 2d 카메라 생성
         app

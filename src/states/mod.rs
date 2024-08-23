@@ -3,13 +3,8 @@ use bevy::prelude::*;
 #[derive(States, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum States {
     Assets(Assets),
-    //
     MainMenu,
-    //
-    Guide,
-    Game,
-    Pause,
-    Result,
+    Game(Game),
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]

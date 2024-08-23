@@ -1,7 +1,7 @@
 
 use bevy::prelude::*;
-use bevy_mod_picking::{events::Click, prelude::On, PickableBundle};
-use crate::{components::{bird::{gen_bird_component, Bird, BirdAnimateTimer, BirdBundle}, button::PlayBtn, ground::Ground, main_menu::Title, resize::Resizable, states::InMainMenu}, constant::Z_INDEX_1, events::{btn::PlayBtnClickEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::States};
+use bevy_mod_picking::{events::Click, prelude::On};
+use crate::{components::{bird::BirdBundle, button::PlayBtn, ground::Ground, main_menu::Title, resize::Resizable, states::InMainMenu}, constant::Z_INDEX_1, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
 use bevy_mod_picking::prelude::*;
 
 pub fn enter(
@@ -72,7 +72,9 @@ pub fn enter(
         On::<Pointer<DragEnd>>::target_commands_mut(move |evt, target_commands| {
             target_commands.insert(normal2.clone());
         }),
-        On::<Pointer<Click>>::send_event::<PlayBtnClickEvent>(),
+        On::<Pointer<Click>>::run(|mut next_state: ResMut<NextState<States>>| {
+            next_state.set(States::Game(Game::Guide));
+        }),
         SpriteBundle {
             texture: fb_assets.button_play_normal.clone(),
             transform: Transform {
@@ -128,15 +130,5 @@ pub fn title_animation(
 ) {
     if let Ok(mut transform) = q_title.get_single_mut() {
         transform.translation.y = 60. + (time.elapsed_seconds() * 2.).sin() * 2.;
-    }
-}
-
-pub fn play_btn_click(
-    mut er: EventReader<PlayBtnClickEvent>,
-    mut next_state: ResMut<NextState<States>>
-) {
-    for _ in er.read() {
-        info!("play btn click!");
-        next_state.set(States::Guide);
     }
 }
