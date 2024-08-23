@@ -1,0 +1,1 @@
+pub const TARGET_FRAME_RATE: f64 = 60.;

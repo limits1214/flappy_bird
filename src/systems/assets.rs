@@ -1,0 +1,28 @@
+use bevy::prelude::*;
+
+use crate::{resources::assets::FlappyBirdAssets, states::States};
+
+pub fn loading_ui() {
+    info!("loading_ui");
+}
+
+pub fn assets_gen(
+    mut fb_assets: ResMut<FlappyBirdAssets>,
+    mut next_state: ResMut<NextState<States>>,
+    mut textures: ResMut<Assets<Image>>,
+    mut atlases: ResMut<Assets<TextureAtlasLayout>>,
+) {
+    info!("assets_gen");
+    let bird_0 = fb_assets.bird_orange_0.id();
+    let bird_1 = fb_assets.bird_orange_0.id();
+    let bird_2 = fb_assets.bird_orange_0.id();
+    let mut builder = TextureAtlasBuilder::default();
+    builder.add_texture(Some(bird_0), textures.get(bird_0).unwrap());
+    builder.add_texture(Some(bird_1), textures.get(bird_1).unwrap());
+    builder.add_texture(Some(bird_2), textures.get(bird_2).unwrap());
+    let (layout, texture) = builder.build().unwrap();
+    fb_assets.gen_bird_atlas_layout = atlases.add(layout);
+    fb_assets.gen_bird_atlas_texture = textures.add(texture);
+
+    next_state.set(States::MainMenu);
+}
