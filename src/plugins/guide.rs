@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{events::{jump::JumpEvent, score::ScoreUpEvent}, resources::{config::GameConfig, pipe_spawn_timer::PipeSpawnTimer}, states::{Game, States}, systems::{self, bird::{bird_animation, bird_colliding_check}, ground::ground_animation, pipe::{pipe_movement, pipe_spawn}, score::score_up, touch::touch}};
+use crate::{events::{jump::JumpEvent, result::ResultEvent, score::ScoreUpEvent}, resources::{config::GameConfig, pipe_spawn_timer::PipeSpawnTimer}, states::{Game, States}, systems::{self, bird::{bird_animation, bird_colliding_check}, game::trsition_result_on_main, ground::ground_animation, pipe::{pipe_movement, pipe_spawn}, result::on_result, score::score_up, touch::touch}};
 
 pub struct GuidePlugin;
 
@@ -9,6 +9,7 @@ impl Plugin for GuidePlugin {
         app
             .add_event::<JumpEvent>()
             .add_event::<ScoreUpEvent>()
+            .add_event::<ResultEvent>()
             .insert_resource(PipeSpawnTimer(Timer::from_seconds(1., TimerMode::Repeating)))
             .insert_resource(GameConfig { score: 0 })
             .add_systems(OnEnter(States::Game(Game::Guide)), (systems::guide::enter, pipe_spawn))
@@ -28,9 +29,26 @@ impl Plugin for GuidePlugin {
             )
             .add_systems(
                 Update,
-                score_up
+                (score_up)
+                    .after(bird_colliding_check)
                     .run_if(on_event::<ScoreUpEvent>())
             )
+            .add_systems(
+                Update, 
+                (on_result)
+                    .after(bird_colliding_check)
+                    .run_if(on_event::<ResultEvent>())
+            )
+            .add_systems(
+                OnTransition {
+                    entered: States::MainMenu,
+                    exited: States::Game(Game::Result),
+                }, trsition_result_on_main)
+            .add_systems(
+                OnTransition {
+                    entered: States::Game(Game::Game),
+                    exited: States::Game(Game::Result),
+                }, trsition_result_on_main)
             ;
     }
 }
