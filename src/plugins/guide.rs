@@ -13,7 +13,7 @@ impl Plugin for GuidePlugin {
             .add_event::<ResultEvent>()
             .insert_resource(PipeSpawnTimer(Timer::from_seconds(1., TimerMode::Repeating)))
             .insert_resource(GameConfig { score: 0 })
-            .add_systems(OnEnter(States::Game(Game::Guide)), (systems::guide::enter))
+            .add_systems(OnEnter(States::Game(Game::Init)), (systems::guide::enter))
             .add_systems(
                 Update,
                 (

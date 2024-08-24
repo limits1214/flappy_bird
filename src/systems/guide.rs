@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::prelude::{ *};
 use avian2d::prelude::*;
 use bevy_mod_picking::prelude::*;
 use rand::Rng;
@@ -8,6 +8,7 @@ pub fn enter(
     mut commands: Commands,
     fb_assets: Res<FlappyBirdAssets>,
     mut ew_resize: EventWriter<ResizeEvent>,
+    mut next_state: ResMut<NextState<States>>,
 ) {
     info!("guide_enter");
     let bg = (
@@ -65,15 +66,29 @@ pub fn enter(
             | {
             info!("pause!!");
             match *now_state.get() {
-                States::Game(Game::Pause) => {
+                States::Game(Game::GamePause) => {
                     next_state.set(States::Game(Game::Game));
                     if let Some(mut ec) = commands.get_entity(event.target) {
                         ec.insert(pause_sprite.clone());
                     }
                     time.unpause();
                 },
+                States::Game(Game::GuidePause) => {
+                    next_state.set(States::Game(Game::Guide));
+                    if let Some(mut ec) = commands.get_entity(event.target) {
+                        ec.insert(pause_sprite.clone());
+                    }
+                    time.unpause();
+                },
+                States::Game(Game::Guide) => {
+                    next_state.set(States::Game(Game::GuidePause));
+                    if let Some(mut ec) = commands.get_entity(event.target) {
+                        ec.insert(pause_sprite.clone());
+                    }
+                    time.pause();
+                },
                 _ => {
-                    next_state.set(States::Game(Game::Pause));
+                    next_state.set(States::Game(Game::GamePause));
                     if let Some(mut ec) = commands.get_entity(event.target) {
                         ec.insert(resume_sprite.clone());
                     }
@@ -274,4 +289,5 @@ pub fn enter(
         });
 
     ew_resize.send(ResizeEvent);
+    next_state.set(States::Game(Game::Guide));
 }

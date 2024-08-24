@@ -14,8 +14,10 @@ pub enum Assets {
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Game {
+    Init,
     Guide,
     Game,
-    Pause,
+    GuidePause,
+    GamePause,
     Result,
 }

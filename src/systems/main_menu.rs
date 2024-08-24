@@ -166,7 +166,7 @@ pub fn tween_callback_menu_to_game(
 ) {
     for event in reader.read() {
         if event.user_data == TWEEN_MENU_TO_GAME {
-            next_state.set(States::Game(Game::Guide));
+            next_state.set(States::Game(Game::Init));
             
         }
     }
