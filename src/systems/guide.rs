@@ -1,6 +1,7 @@
-use bevy::{prelude::*, transform::commands};
+use bevy::prelude::*;
+use avian2d::prelude::*;
 use bevy_mod_picking::prelude::*;
-use crate::{components::{bird::BirdBundle, ground::Ground, guide::Guide, resize::Resizable, states::InGame}, constant::Z_INDEX_1, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::Game};
+use crate::{components::{bird::{Bird, BirdBundle}, ground::Ground, guide::Guide, puase::PauseBtn, resize::Resizable, states::InGame, Bg}, constant::{Z_INDEX_1, Z_INDEX_10}, events::{jump::JumpEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::Game};
 use crate::states::States;
 pub fn enter(
     mut commands: Commands,
@@ -11,15 +12,25 @@ pub fn enter(
     let bg = (
         Name::new("bg"),
         InGame,
+        Bg,
         Resizable,
         SpriteBundle {
             texture: fb_assets.background_day.clone(),
             ..default()
-        }
+        },
+        On::<Pointer<Down>>::send_event::<JumpEvent>(),
     );
 
     let bird = (
         BirdBundle::default(),
+        RigidBody::Static,
+        Collider::circle(17./2.),
+        // LinearDamping(0.0),
+        ColliderDensity(0.0),
+        Mass(5.0),
+        // ColliderDensity(2.5),
+        // Mass(5.0),
+        // GravityScale(100.),
         SpriteBundle {
             texture: fb_assets.gen_bird_atlas_texture.clone(),
             transform: Transform {
@@ -40,14 +51,15 @@ pub fn enter(
     let pause_btn = (
         Name::new("pause"),
         SpatialBundle::from_transform(Transform {
-            translation: Vec3::new(-55., 110., Z_INDEX_1),
+            translation: Vec3::new(-55., 110., Z_INDEX_10),
             ..default()
         }),
         On::<Pointer<Click>>::run(move |
             event: Listener<Pointer<Click>>,
             now_state: Res<State<States>>,
             mut next_state: ResMut<NextState<States>>,
-            mut commands: Commands
+            mut commands: Commands,
+            mut time: ResMut<Time<Physics>>
             | {
             info!("pause!!");
             match *now_state.get() {
@@ -56,12 +68,14 @@ pub fn enter(
                     if let Some(mut ec) = commands.get_entity(event.target) {
                         ec.insert(pause_sprite.clone());
                     }
+                    time.unpause();
                 },
                 _ => {
                     next_state.set(States::Game(Game::Pause));
                     if let Some(mut ec) = commands.get_entity(event.target) {
                         ec.insert(resume_sprite.clone());
                     }
+                    time.pause();
                 },
             };
         }),
@@ -123,16 +137,31 @@ pub fn enter(
             ..default()
         }
     );
+    let ground_collider = (
+        RigidBody::Static,
+        Collider::rectangle(168., 56.),
+        TransformBundle::from_transform(Transform {
+            translation: Vec3::new(0., -100., Z_INDEX_1),
+            ..default()
+        })
+    );
 
     let guide = (
         Name::new("guide"),
-        Guide,
         SpriteBundle {
             texture: fb_assets.instructions.clone(),
             transform: Transform {
                 translation: Vec3::new(0., 0., Z_INDEX_1),
                 ..default()
             },
+            ..default()
+        }
+    );
+
+    let guide_parent = (
+        Name::new("guide"),
+        Guide,
+        SpatialBundle {
             ..default()
         }
     );
@@ -143,14 +172,18 @@ pub fn enter(
                 .with_children(|parent| {
                     parent.spawn(pause_btn_sprite);
                 });
-            parent.spawn(get_ready);
             parent.spawn(score)
                 .with_children(|parent| {
                     parent.spawn(num_0);
                 });
+            parent.spawn(guide_parent)
+                .with_children(|parent| {
+                    parent.spawn(get_ready);
+                    parent.spawn(guide);
+                });
             parent.spawn(bird);
-            parent.spawn(guide);
             parent.spawn(ground);
+            parent.spawn(ground_collider);
         });
 
     ew_resize.send(ResizeEvent);

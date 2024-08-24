@@ -3,3 +3,6 @@ pub const MASK_Z_INDEX: f32 = 0.;
 pub const ORIGINAL_WIDTH: f32 = 144.;
 pub const ORIGINAL_HEIGHT: f32 = 256.;
 pub const Z_INDEX_1: f32 = 1.;
+pub const Z_INDEX_10: f32 = 10.;
+
+pub const PAUSE_BTN_DEPTH: f32 = 990.;

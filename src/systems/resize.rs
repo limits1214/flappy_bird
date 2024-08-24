@@ -1,12 +1,14 @@
+use avian2d::prelude::{Gravity, GravityScale, Mass};
 use bevy::{prelude::*, window::WindowResized};
 
-use crate::{components::resize::Resizable, constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH}, events::resize::ResizeEvent};
+use crate::{components::{bird::Bird, resize::Resizable}, constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH}, events::resize::ResizeEvent};
 
 pub fn resize(
     q_window: Query<&Window>,
     mut q_resiz: Query<&mut Transform, With<Resizable>>,
     mut er_window_resize: EventReader<WindowResized>,
     mut er_resize: EventReader<ResizeEvent>,
+    mut commands: Commands,
 ) {
     let mut is_resize = false;
     for _ in er_window_resize.read() {
@@ -24,6 +26,7 @@ pub fn resize(
             for mut transform in &mut q_resiz {
                 transform.scale = Vec3::new(scale, scale, transform.scale.z);
             }
+            commands.insert_resource(Gravity(Vec2::NEG_Y * 800. * scale));
         }
     }
 }
