@@ -8,3 +8,4 @@ pub mod resize;
 pub mod bird;
 pub mod ground;
 pub mod touch;
+pub mod pipe;

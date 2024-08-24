@@ -7,6 +7,7 @@ pub mod main_menu;
 pub mod button;
 pub mod guide;
 pub mod puase;
+pub mod pipe;
 
 use bevy::prelude::*;
 

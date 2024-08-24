@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use avian2d::prelude::*;
 use bevy_mod_picking::prelude::*;
-use crate::{components::{bird::{Bird, BirdBundle}, ground::Ground, guide::Guide, puase::PauseBtn, resize::Resizable, states::InGame, Bg}, constant::{Z_INDEX_1, Z_INDEX_10}, events::{jump::JumpEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::Game};
+use rand::Rng;
+use crate::{components::{bird::{Bird, BirdBundle}, ground::Ground, guide::Guide, pipe::Pipe, puase::PauseBtn, resize::Resizable, states::InGame, Bg}, constant::{Z_INDEX_1, Z_INDEX_10}, events::{jump::JumpEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::Game};
 use crate::states::States;
 pub fn enter(
     mut commands: Commands,
@@ -25,9 +26,10 @@ pub fn enter(
         BirdBundle::default(),
         RigidBody::Static,
         Collider::circle(17./2.),
-        // LinearDamping(0.0),
         ColliderDensity(0.0),
         Mass(5.0),
+        
+        // LinearDamping(0.0),
         // ColliderDensity(2.5),
         // Mass(5.0),
         // GravityScale(100.),
@@ -165,6 +167,106 @@ pub fn enter(
             ..default()
         }
     );
+
+    let pipe_bottom_sprite = fb_assets.pipe_green_bottom.clone();
+    let pipe_top_sprite = fb_assets.pipe_green_top.clone();
+
+    let pipe_score_collider = (
+        Name::new("pipe_collider"),
+        Sensor,
+        // RigidBody::Static,
+        Collider::rectangle(5., 300.),
+        SpatialBundle::from_transform(Transform {
+            ..default()
+        })
+    );
+
+    let pipe_bottom = (
+        Name::new("pipe_bottom"),
+        // RigidBody::Static,
+        Sensor,
+        Collider::rectangle(26., 160.),
+        SpriteBundle {
+            texture: pipe_bottom_sprite,
+            transform: Transform {
+                translation: Vec3::new(0., -110., 0.),
+                ..default()
+            },
+            ..default()
+        }
+    );
+
+    let pipe_top = (
+        Name::new("pipe_top"),
+        Sensor,
+        // RigidBody::Static,
+        Collider::rectangle(26., 160.),
+        SpriteBundle {
+            texture: pipe_top_sprite,
+            transform: Transform {
+                translation: Vec3::new(0., 110., 0.),
+                ..default()
+            },
+            ..default()
+        }
+    );
+
+    let pipe_top_collider = (
+        Name::new("pipe_top_collider"),
+        Collider::rectangle(26., 160.),
+        TransformBundle::from_transform(Transform {
+            translation: Vec3::new(0., 110., Z_INDEX_1),
+            ..default()
+        })
+    );
+    let pipe_bottom_collider = (
+        Name::new("pipe_bottom_collider"),
+        Collider::rectangle(26., 160.),
+        TransformBundle::from_transform(Transform {
+            translation: Vec3::new(0., -110., Z_INDEX_1),
+            ..default()
+        })
+    );
+
+    let pipe_parent1 = (
+        Name::new("pipe_parent1"),
+        RigidBody::Kinematic,
+        Pipe,
+        
+        SpatialBundle {
+            transform: Transform {
+                translation: Vec3::new(-85., 0., 1.),
+                ..default()
+            },
+            ..default()
+        }
+    );
+    let r = rand::thread_rng().gen_range((-30.0)..(100.0));
+    let r2 = rand::thread_rng().gen_range((-30.0)..(100.0));
+    let pipe_parent2 = (
+        Name::new("pipe_parent2"),
+        RigidBody::Static,
+        Pipe,
+        SpatialBundle {
+            transform: Transform {
+                translation: Vec3::new(85., r, 120.),
+                ..default()
+            },
+            ..default()
+        }
+    );
+    let pipe_parent3 = (
+        Name::new("pipe_parent3"),
+        RigidBody::Static,
+        Pipe,
+        SpatialBundle {
+            transform: Transform {
+                translation: Vec3::new(170., r2, 120.),
+                ..default()
+            },
+            ..default()
+        }
+    );
     
     commands.spawn(bg)
         .with_children(|parent| {
@@ -180,6 +282,30 @@ pub fn enter(
                 .with_children(|parent| {
                     parent.spawn(get_ready);
                     parent.spawn(guide);
+                });
+            // parent.spawn(pipe_parent1)
+            //     .with_children(|parent| {
+            //         parent.spawn(pipe_top.clone());
+            //         parent.spawn(pipe_bottom.clone());
+            //         // parent.spawn(pipe_top_collider.clone());
+            //         // parent.spawn(pipe_bottom_collider.clone());
+            //         parent.spawn(pipe_score_collider.clone());
+            //     });
+            parent.spawn(pipe_parent2)
+                .with_children(|parent| {
+                    parent.spawn(pipe_top.clone());
+                    parent.spawn(pipe_bottom.clone());
+                    // parent.spawn(pipe_top_collider.clone());
+                    // parent.spawn(pipe_bottom_collider.clone());
+                    parent.spawn(pipe_score_collider.clone());
+                });
+            parent.spawn(pipe_parent3)
+                .with_children(|parent| {
+                    parent.spawn(pipe_top);
+                    parent.spawn(pipe_bottom);
+                    // parent.spawn(pipe_top_collider);
+                    // parent.spawn(pipe_bottom_collider);
+                    parent.spawn(pipe_score_collider);
                 });
             parent.spawn(bird);
             parent.spawn(ground);
