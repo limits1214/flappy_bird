@@ -1,7 +1,7 @@
 use avian2d::prelude::{Gravity, GravityScale, Mass};
 use bevy::{prelude::*, window::WindowResized};
 
-use crate::{components::{bird::Bird, resize::Resizable}, constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH}, events::resize::ResizeEvent};
+use crate::{components::{bird::Bird, resize::Resizable}, constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH}, events::resize::ResizeEvent, resources::resize_scale::ResizeScale};
 
 pub fn resize(
     q_window: Query<&Window>,
@@ -27,6 +27,7 @@ pub fn resize(
                 transform.scale = Vec3::new(scale, scale, transform.scale.z);
             }
             commands.insert_resource(Gravity(Vec2::NEG_Y * 800. * scale));
+            commands.insert_resource(ResizeScale(scale));
         }
     }
 }
