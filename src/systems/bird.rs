@@ -27,7 +27,6 @@ pub fn bird_colliding_check(
     q_pipe: Query<Entity, With<Pipe>>,
     mut ew_score_up: EventWriter<ScoreUpEvent>,
     mut ew_result: EventWriter<ResultEvent>,
-    mut next_state: ResMut<NextState<States>>,
 ) {
     for colliding_entities in &q_bird_colliders {
         for entitiy in colliding_entities.iter() {
