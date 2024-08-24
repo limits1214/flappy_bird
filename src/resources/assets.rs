@@ -111,3 +111,21 @@ pub struct FlappyBirdAssets {
     pub gen_bird_atlas_layout: Handle<TextureAtlasLayout>,
     pub gen_bird_atlas_texture: Handle<Image>,
 }
+
+impl FlappyBirdAssets {
+    pub fn get_large_num(&self, num: &str) -> Handle<Image> {
+        match num {
+            "0" => self.number_large_0.clone(),
+            "1" => self.number_large_1.clone(),
+            "2" => self.number_large_2.clone(),
+            "3" => self.number_large_3.clone(),
+            "4" => self.number_large_4.clone(),
+            "5" => self.number_large_5.clone(),
+            "6" => self.number_large_6.clone(),
+            "7" => self.number_large_7.clone(),
+            "8" => self.number_large_8.clone(),
+            "9" => self.number_large_9.clone(),
+            _ => unreachable!()
+        }
+    }
+}

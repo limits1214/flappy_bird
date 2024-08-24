@@ -8,6 +8,7 @@ pub mod button;
 pub mod guide;
 pub mod puase;
 pub mod pipe;
+pub mod score;
 
 use bevy::prelude::*;
 

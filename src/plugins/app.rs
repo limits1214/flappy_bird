@@ -16,10 +16,11 @@ impl Plugin for AppPlugin {
             .add_plugins(bevy_framepace::FramepacePlugin)
             .add_plugins(DefaultPickingPlugins)
             .add_plugins(PhysicsPlugins::default())
-            .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
-            .insert_resource(FramepaceSettings{
-                limiter: Limiter::from_framerate(TARGET_FRAME_RATE)
-            });
+            // .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
+            // .insert_resource(FramepaceSettings{
+            //     limiter: Limiter::from_framerate(TARGET_FRAME_RATE)
+            // })
+            ;
 
         // 내부 내부 설정
         app

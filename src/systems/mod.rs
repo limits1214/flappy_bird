@@ -9,3 +9,4 @@ pub mod bird;
 pub mod ground;
 pub mod touch;
 pub mod pipe;
+pub mod score;
