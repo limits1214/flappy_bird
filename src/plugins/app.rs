@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_framepace::{FramepaceSettings, Limiter};
 use bevy_mod_picking::DefaultPickingPlugins;
 use avian2d::prelude::*;
+use bevy_tweening::TweeningPlugin;
 use crate::{constant::TARGET_FRAME_RATE, states::{Assets, States}};
 
 use super::{assets::AssetPlugin, guide::GuidePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin};
@@ -16,6 +17,7 @@ impl Plugin for AppPlugin {
             .add_plugins(bevy_framepace::FramepacePlugin)
             .add_plugins(DefaultPickingPlugins)
             .add_plugins(PhysicsPlugins::default())
+            .add_plugins(TweeningPlugin)
             // .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
             // .insert_resource(FramepaceSettings{
             //     limiter: Limiter::from_framerate(TARGET_FRAME_RATE)

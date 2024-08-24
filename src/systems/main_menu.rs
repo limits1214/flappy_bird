@@ -1,7 +1,10 @@
 
-use bevy::prelude::*;
+use std::time::Duration;
+
+use bevy::{color::palettes::css::{BLACK, BLUE, RED, WHITE}, prelude::*};
 use bevy_mod_picking::{events::Click, prelude::On};
-use crate::{components::{bird::BirdBundle, button::PlayBtn, ground::Ground, main_menu::Title, resize::Resizable, states::InMainMenu}, constant::Z_INDEX_1, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
+use bevy_tweening::{lens::{ColorMaterialColorLens, SpriteColorLens}, Animator, EaseFunction, Tween, TweenCompleted};
+use crate::{components::{bird::BirdBundle, button::PlayBtn, ground::Ground, main_menu::Title, mask::{Mask, MaskCenter, MaskSide}, resize::Resizable, states::InMainMenu, Bg}, constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1}, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
 use bevy_mod_picking::prelude::*;
 
 pub fn enter(
@@ -57,6 +60,8 @@ pub fn enter(
         }
     );
 
+    
+
     let pressed = fb_assets.button_play_pressed.clone();
     let normal = fb_assets.button_play_normal.clone();
     let normal2 = fb_assets.button_play_normal.clone();
@@ -72,8 +77,30 @@ pub fn enter(
         On::<Pointer<DragEnd>>::target_commands_mut(move |evt, target_commands| {
             target_commands.insert(normal2.clone());
         }),
-        On::<Pointer<Click>>::run(|mut next_state: ResMut<NextState<States>>| {
-            next_state.set(States::Game(Game::Guide));
+        On::<Pointer<Click>>::run(|mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>, mut commands: Commands| {
+            if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
+                transform.translation.z = 999.;
+                let transition_tween = Tween::new(
+                    EaseFunction::QuarticInOut, 
+                    Duration::from_millis(500), 
+                    SpriteColorLens {
+                        start: Color::srgba_u8(0, 0, 0, 0),
+                        end: BLACK.into(),
+                    },
+                )
+                .with_completed_event(TWEEN_MENU_TO_GAME);
+                let transition_tween2 = Tween::new(
+                    EaseFunction::QuarticInOut, 
+                    Duration::from_millis(500), 
+                    SpriteColorLens {
+                        start: BLACK.into(),
+                        end: Color::srgba_u8(0, 0, 0, 0),
+                    },
+                ).with_completed_event(TWEEN_MASK_CENTER_BACK);
+                
+                let seq = transition_tween.then(transition_tween2);
+                commands.entity(entity).insert(Animator::new(seq));
+            }
         }),
         SpriteBundle {
             texture: fb_assets.button_play_normal.clone(),
@@ -130,5 +157,30 @@ pub fn title_animation(
 ) {
     if let Ok(mut transform) = q_title.get_single_mut() {
         transform.translation.y = 60. + (time.elapsed_seconds() * 2.).sin() * 2.;
+    }
+}
+
+pub fn tween_callback_menu_to_game(
+    mut reader: EventReader<TweenCompleted>,
+    mut next_state: ResMut<NextState<States>>,
+) {
+    for event in reader.read() {
+        if event.user_data == TWEEN_MENU_TO_GAME {
+            next_state.set(States::Game(Game::Guide));
+            
+        }
+    }
+}
+
+pub fn tween_callback_mask_center_back(
+    mut reader: EventReader<TweenCompleted>,
+    mut q_mask: Query<&mut Transform, With<MaskCenter>>
+) {
+    for event in reader.read() {
+        if event.user_data == TWEEN_MASK_CENTER_BACK {
+            if let Ok(mut transform) = q_mask.get_single_mut() {
+                transform.translation.z = -1.;
+            }
+        }
     }
 }

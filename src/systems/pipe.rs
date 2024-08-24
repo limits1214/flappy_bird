@@ -3,10 +3,10 @@ use rand::Rng;
 
 use crate::{components::pipe::{Pipe, PipeParent, PipePoint, PointEarned}, constant::Z_INDEX_1, resources::{assets::FlappyBirdAssets, pipe_spawn_timer::PipeSpawnTimer}};
 
-pub fn pipe_spawn(
-    mut commands: Commands,
-    fb_assets: Res<FlappyBirdAssets>,
-){
+// pub fn pipe_spawn(
+//     mut commands: Commands,
+//     fb_assets: Res<FlappyBirdAssets>,
+// ){
     // let pipe_bottom = fb_assets.pipe_green_bottom.clone();
     // let pipe_top = fb_assets.pipe_green_top.clone();
 
@@ -39,18 +39,18 @@ pub fn pipe_spawn(
     //         }
     //     )
     // );
-}
+// }
 
-pub fn pipe_spawn2(
-    time: Res<Time>,
-    mut pipe_spawn_timer: ResMut<PipeSpawnTimer>,
+// pub fn pipe_spawn2(
+//     time: Res<Time>,
+//     mut pipe_spawn_timer: ResMut<PipeSpawnTimer>,
 
-){
-    pipe_spawn_timer.0.tick(time.delta());
-    if pipe_spawn_timer.0.just_finished() {
-        info!("pipe spawn");
-    }
-}
+// ){
+//     pipe_spawn_timer.0.tick(time.delta());
+//     if pipe_spawn_timer.0.just_finished() {
+//         info!("pipe spawn");
+//     }
+// }
 
 pub fn pipe_movement(
     mut commands: Commands,

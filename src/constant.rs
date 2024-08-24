@@ -7,3 +7,6 @@ pub const Z_INDEX_2: f32 = 2.;
 pub const Z_INDEX_10: f32 = 10.;
 
 pub const PAUSE_BTN_DEPTH: f32 = 990.;
+
+pub const TWEEN_MENU_TO_GAME: u64 = 1;
+pub const TWEEN_MASK_CENTER_BACK: u64 = 2;

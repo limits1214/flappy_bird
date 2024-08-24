@@ -1,11 +1,9 @@
-use bevy::{color::palettes::css, prelude::*, sprite::MaterialMesh2dBundle};
+use bevy::{color::palettes::css, prelude::*};
 
-use crate::{components::{mask::{Mask, MaskParent, MaskSide}, resize::Resizable}, constant::{MASK_Z_INDEX, ORIGINAL_HEIGHT, ORIGINAL_WIDTH}};
+use crate::{components::{mask::{Mask, MaskCenter, MaskParent, MaskSide}, resize::Resizable}, constant::{MASK_Z_INDEX, ORIGINAL_HEIGHT, ORIGINAL_WIDTH}};
 
 pub fn spawn_mask(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     let mask_small = 200.;
     let mask_large = 600.;
@@ -13,13 +11,16 @@ pub fn spawn_mask(
     let left = (
         Name::new("left_mask"),
         Mask(MaskSide::Left),
-        MaterialMesh2dBundle {
-            mesh: meshes.add(Rectangle::new(mask_small, mask_large)).into(),
+        SpriteBundle {
+            sprite: Sprite {
+                color: css::DIM_GRAY.into(),
+                custom_size: Some(Vec2::new(mask_small, mask_large)),
+                ..default()
+            },
             transform: Transform {
                 translation: Vec3::new(-(ORIGINAL_WIDTH/2. + mask_small/2.), 0., mask_z),
                 ..default()
             },
-            material: materials.add(Color::from(css::DIM_GRAY)),
             ..default()
         }
     );
@@ -27,13 +28,16 @@ pub fn spawn_mask(
     let right = (
         Name::new("right_mask"),
         Mask(MaskSide::Right),
-        MaterialMesh2dBundle {
-            mesh: meshes.add(Rectangle::new(mask_small, mask_large)).into(),
+        SpriteBundle {
+            sprite: Sprite {
+                color: css::DIM_GRAY.into(),
+                custom_size: Some(Vec2::new(mask_small, mask_large)),
+                ..default()
+            },
             transform: Transform {
                 translation: Vec3::new(ORIGINAL_WIDTH/2. + mask_small/2., 0., mask_z),
                 ..default()
             },
-            material: materials.add(Color::from(css::DIM_GRAY)),
             ..default()
         }
     );
@@ -41,13 +45,16 @@ pub fn spawn_mask(
     let up = (
         Name::new("up_mask"),
         Mask(MaskSide::Up),
-        MaterialMesh2dBundle {
-            mesh: meshes.add(Rectangle::new(mask_large, mask_small)).into(),
+        SpriteBundle {
+            sprite: Sprite {
+                color: css::DIM_GRAY.into(),
+                custom_size: Some(Vec2::new(mask_large, mask_small)),
+                ..default()
+            },
             transform: Transform {
                 translation: Vec3::new(0., ORIGINAL_HEIGHT/2. + mask_small/2., mask_z),
                 ..default()
             },
-            material: materials.add(Color::from(css::DIM_GRAY)),
             ..default()
         }
     );
@@ -55,13 +62,33 @@ pub fn spawn_mask(
     let down = (
         Name::new("down_mask"),
         Mask(MaskSide::Down),
-        MaterialMesh2dBundle {
-            mesh: meshes.add(Rectangle::new(mask_large, mask_small)).into(),
+        SpriteBundle {
+            sprite: Sprite {
+                color: css::DIM_GRAY.into(),
+                custom_size: Some(Vec2::new(mask_large, mask_small)),
+                ..default()
+            },
             transform: Transform {
                 translation: Vec3::new(0., -(ORIGINAL_HEIGHT/2. + mask_small/2.), mask_z),
                 ..default()
             },
-            material: materials.add(Color::from(css::DIM_GRAY)),
+            ..default()
+        }
+    );
+
+    let center = (
+        Name::new("center_mask"),
+        MaskCenter,
+        SpriteBundle {
+            sprite: Sprite {
+                color: Color::srgba_u8(0, 0, 0, 0),
+                custom_size: Some(Vec2::new(ORIGINAL_WIDTH, ORIGINAL_HEIGHT)),
+                ..default()
+            },
+            transform: Transform {
+                translation: Vec3::new(0., 0., mask_z),
+                ..default()
+            },
             ..default()
         }
     );
@@ -79,6 +106,7 @@ pub fn spawn_mask(
 
     commands.spawn(parent)
         .with_children(|parent| {
+            parent.spawn(center);
             parent.spawn(up);
             parent.spawn(right);
             parent.spawn(down);
