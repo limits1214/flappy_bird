@@ -1,10 +1,7 @@
-use bevy::prelude::*;
-use serde_json::json;
+
 use std::{io::{Read, Write}, path::PathBuf};
-
 use directories::ProjectDirs;
-
-use super::{Ffi, FfiKv, Score};
+use super::{Ffi, FfiKv};
 
 const QUALIFIER: &str = "qualifier";
 const ORGANIZATION: &str = "organization";
@@ -35,7 +32,7 @@ impl FfiKv for Ffi {
 
             contents
         } else {
-            warn!("proj dir fail");
+            println!("proj dir fail");
             String::new()
         }
     }
@@ -66,13 +63,14 @@ impl FfiKv for Ffi {
                 return;
             }
         } else {
-            warn!("proj dir fail");
+            println!("proj dir fail");
         }
     }
 }
 
 #[test]
 fn get_test() {
+    use super::Score;
     let get = Ffi::get("test");
     let score = serde_json::from_str::<Score>(&get).unwrap();
     println!("get: {:?}", score);
@@ -80,6 +78,7 @@ fn get_test() {
 
 #[test]
 fn set_test() {
+    use super::Score;
     let score = Score {
         score: 1200
     };
