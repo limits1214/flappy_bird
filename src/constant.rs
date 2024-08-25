@@ -10,3 +10,5 @@ pub const PAUSE_BTN_DEPTH: f32 = 990.;
 
 pub const TWEEN_MENU_TO_GAME: u64 = 1;
 pub const TWEEN_MASK_CENTER_BACK: u64 = 2;
+pub const TWEEN_DEATH_WHITE: u64 = 3;
+pub const TWEEN_RESULT_TO_MENU: u64 = 4;

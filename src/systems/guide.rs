@@ -1,6 +1,7 @@
 use bevy::prelude::{ *};
 use avian2d::prelude::*;
 use bevy_mod_picking::prelude::*;
+use bevy_tweening::{Animator, AnimatorState};
 use rand::Rng;
 use crate::{components::{bird::{Bird, BirdBundle}, ground::{Ground, GroundCollider}, guide::Guide, pipe::{Pipe, PipeParent, PipePoint}, puase::PauseBtn, resize::Resizable, score::ScoreParent, states::InGame, Bg}, constant::{Z_INDEX_1, Z_INDEX_10}, events::{jump::JumpEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::Game};
 use crate::states::States;
@@ -62,7 +63,8 @@ pub fn enter(
             now_state: Res<State<States>>,
             mut next_state: ResMut<NextState<States>>,
             mut commands: Commands,
-            mut time: ResMut<Time<Physics>>
+            mut time: ResMut<Time<Physics>>,
+            mut q_bird_tween: Query<&mut Animator<Transform>, With<Bird>>,
             | {
             info!("pause!!");
             match *now_state.get() {
@@ -72,6 +74,9 @@ pub fn enter(
                         ec.insert(pause_sprite.clone());
                     }
                     time.unpause();
+                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                        ani.state = AnimatorState::Playing;
+                    }
                 },
                 States::Game(Game::GuidePause) => {
                     next_state.set(States::Game(Game::Guide));
@@ -79,6 +84,9 @@ pub fn enter(
                         ec.insert(pause_sprite.clone());
                     }
                     time.unpause();
+                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                        ani.state = AnimatorState::Playing;
+                    }
                 },
                 States::Game(Game::Guide) => {
                     next_state.set(States::Game(Game::GuidePause));
@@ -86,13 +94,29 @@ pub fn enter(
                         ec.insert(pause_sprite.clone());
                     }
                     time.pause();
+                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                        ani.state = AnimatorState::Paused;
+                    }
                 },
-                _ => {
+                States::Game(Game::Game) => {
                     next_state.set(States::Game(Game::GamePause));
                     if let Some(mut ec) = commands.get_entity(event.target) {
-                        ec.insert(resume_sprite.clone());
+                        ec.insert(pause_sprite.clone());
                     }
                     time.pause();
+                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                        ani.state = AnimatorState::Paused;
+                    }
+                },
+                _ => {
+                    // next_state.set(States::Game(Game::GamePause));
+                    // if let Some(mut ec) = commands.get_entity(event.target) {
+                    //     ec.insert(resume_sprite.clone());
+                    // }
+                    // time.pause();
+                    // if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                    //     ani.state = AnimatorState::Paused;
+                    // }
                 },
             };
         }),
