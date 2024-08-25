@@ -334,7 +334,6 @@ pub fn tween_callback_death_white(
 
             let ok = (
                 Name::new("ok"),
-                
                 SpriteBundle {
                     sprite: Sprite {
                         color: Color::srgba_u8(0, 0, 0, 0),
@@ -347,6 +346,15 @@ pub fn tween_callback_death_white(
                     },
                     ..default()
                 },
+                On::<Pointer<Down>>::target_component_mut::<Transform>(|event, transform| {
+                    transform.translation.y = -61.;
+                }),
+                On::<Pointer<Up>>::target_component_mut::<Transform>(|event, transform| {
+                    transform.translation.y = -60.;
+                }),
+                On::<Pointer<DragEnd>>::target_component_mut::<Transform>(|event, transform| {
+                    transform.translation.y = -60.;
+                }),
                 On::<Pointer<Click>>::run(|mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>, mut commands: Commands| {
                     if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
                         transform.translation.z = 999.;
