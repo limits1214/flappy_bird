@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_tweening::TweenCompleted;
 
-use crate::{events::{jump::JumpEvent, result::ResultEvent, score::ScoreUpEvent}, resources::{config::GameConfig, pipe_spawn_timer::PipeSpawnTimer}, states::{Game, States}, systems::{self, bird::{bird_animation, bird_colliding_check}, game::trsition_result_on_main, ground::ground_animation, main_menu::{tween_callback_mask_center_back, tween_callback_menu_to_game}, pipe::pipe_movement, result::{on_result, tween_callback_death_white, tween_callback_result_to_menu}, score::score_up, touch::touch}};
+use crate::{events::{jump::JumpEvent, result::ResultEvent, score::ScoreUpEvent}, resources::{config::GameConfig, pipe_spawn_timer::PipeSpawnTimer}, states::{Game, States}, systems::{self, bird::{bird_animation, bird_colliding_check}, game::trsition_result_on_main, ground::ground_animation, main_menu::{tween_callback_mask_center_back, tween_callback_menu_to_game}, pipe::pipe_movement, result::{on_result, spakle_animation, tween_callback_death_white, tween_callback_result_to_menu}, score::score_up, touch::touch}};
 
 pub struct GuidePlugin;
 
@@ -39,6 +39,11 @@ impl Plugin for GuidePlugin {
                 (on_result)
                     .after(bird_colliding_check)
                     .run_if(on_event::<ResultEvent>())
+            )
+            .add_systems(
+                Update, 
+                (spakle_animation)
+                    .run_if(in_state(States::Game(Game::Result)))
             )
             .add_systems(
                 OnTransition {

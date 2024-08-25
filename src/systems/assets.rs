@@ -24,5 +24,16 @@ pub fn assets_gen(
     fb_assets.gen_bird_atlas_layout = atlases.add(layout);
     fb_assets.gen_bird_atlas_texture = textures.add(texture);
 
+    let sparkle_0 = fb_assets.spark_0.id();
+    let sparkle_1 = fb_assets.spark_1.id();
+    let sparkle_2 = fb_assets.spark_2.id();
+    let mut builder = TextureAtlasBuilder::default();
+    builder.add_texture(Some(sparkle_0), textures.get(sparkle_0).unwrap());
+    builder.add_texture(Some(sparkle_1), textures.get(sparkle_1).unwrap());
+    builder.add_texture(Some(sparkle_2), textures.get(sparkle_2).unwrap());
+    let (layout, texture) = builder.build().unwrap();
+    fb_assets.gen_sparkle_atlas_layout = atlases.add(layout);
+    fb_assets.gen_sparkle_atlas_texture = textures.add(texture);
+
     next_state.set(States::MainMenu);
 }

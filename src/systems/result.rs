@@ -3,8 +3,9 @@ use std::time::Duration;
 use bevy::{color::palettes::css::{BLACK, WHITE}, prelude::*};
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{lens::{SpriteColorLens, TransformPositionLens}, Animator, BoxedTweenable, Delay, EaseFunction, Tracks, Tween, TweenCompleted, Tweenable};
+use rand::Rng;
 
-use crate::{components::{mask::MaskCenter, result::InResult, Bg}, constant::{TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_RESULT_TO_MENU}, events::result::ResultEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
+use crate::{components::{mask::MaskCenter, result::InResult, sparkle::{Sparkle, SparkleAniTimer}, Bg}, constant::{TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_RESULT_TO_MENU}, events::result::ResultEvent, ffi::{Ffi, FfiKv, Score}, resources::{assets::FlappyBirdAssets, config::GameConfig,  }, states::{Game, States}};
 
 pub fn on_result(
     mut commands: Commands,
@@ -195,12 +196,40 @@ pub fn tween_callback_death_white(
     mut q_mask: Query<&mut Transform, With<MaskCenter>>,
     q_bg: Query<Entity, With<Bg>>,
     fb_assets: Res<FlappyBirdAssets>,
+    mut config: ResMut<GameConfig>,
 ) {
     for event in reader.read() {
         if event.user_data == TWEEN_DEATH_WHITE {
             if let Ok(mut transform) = q_mask.get_single_mut() {
                 transform.translation.z = -1.;
             }
+
+            
+
+            let loaded_score_str = Ffi::get("score");
+            let mut loaded_best_score = match serde_json::from_str::<Score>(&loaded_score_str) {
+                Ok(s) => {
+                    s.score
+                },
+                Err(_) => {
+                    0
+                }
+            };
+
+            let now_score = config.score;
+
+            let is_new = if now_score > loaded_best_score {
+                loaded_best_score = now_score;
+                let score = Score {
+                    score: now_score
+                };
+                let score_string = serde_json::to_string(&score).unwrap_or(String::new());
+                Ffi::set("score", &score_string);
+                true
+            } else {
+                false
+            };
+
 
             let tween_gameover1 = Tween::new(
                 EaseFunction::QuarticInOut, 
@@ -235,7 +264,7 @@ pub fn tween_callback_death_white(
 
             let gameover_parent = (
                 Name::new("gameover parent"),
-                InResult,
+                
                 SpatialBundle::from_transform(Transform {
                     translation: Vec3::new(0., 50., 10.),
                     ..default()
@@ -262,17 +291,17 @@ pub fn tween_callback_death_white(
                 EaseFunction::QuadraticInOut, 
                 Duration::from_millis(500), 
                 TransformPositionLens {
-                    start: Vec3::new(0., -300., 999.),
-                    end:  Vec3::new(-0., 0., 999.),
+                    start: Vec3::new(0., -300., 222.),
+                    end:  Vec3::new(-0., 0., 222.),
                 }
             );
             let seq = panel_tween_delay.then(panel_tween);
 
             let panel_parent = (
-                Name::new("result parent"),
-                InResult,
+                Name::new("panel parent"),
+                
                 SpatialBundle::from_transform(Transform{
-                    translation: Vec3::new(0., -300., 999.),
+                    translation: Vec3::new(0., -300., 222.),
                     ..default()
                 }),
                 Animator::new(seq),
@@ -305,7 +334,7 @@ pub fn tween_callback_death_white(
 
             let ok = (
                 Name::new("ok"),
-                InResult,
+                
                 SpriteBundle {
                     sprite: Sprite {
                         color: Color::srgba_u8(0, 0, 0, 0),
@@ -349,51 +378,172 @@ pub fn tween_callback_death_white(
             let medal_parent = (
                 Name::new("medal_parent"),
                 SpatialBundle::from_transform(Transform{
-                    translation: Vec3::new(-32., -4., 999.),
+                    translation: Vec3::new(-32., -4., 222.),
                     ..default()
                 }),
             );
 
             let medal = (
-                Name::new("medal bronze"),
-                SpriteBundle {
-                    texture: fb_assets.medal_bronze.clone(),
-                    ..default()
+                Name::new("medal"),
+                if now_score >= 4 {
+                    SpriteBundle {
+                        texture: fb_assets.medal_platinum.clone(),
+                        ..default()
+                    }
+                } else if now_score >= 3 {
+                    SpriteBundle {
+                        texture: fb_assets.medal_gold.clone(),
+                        ..default()
+                    }
+                } else if now_score >= 2 {
+                    SpriteBundle {
+                        texture: fb_assets.medal_silver.clone(),
+                        ..default()
+                    }
+                } else if now_score >= 1 {
+                    SpriteBundle {
+                        texture: fb_assets.medal_bronze.clone(),
+                        ..default()
+                    }
+                } else {
+                    SpriteBundle {
+                        transform: Transform {
+                            translation: Vec3::new(0., 0., -999.),
+                            ..default()
+                        },
+                        ..default()
+                    }
                 }
             );
 
             let score_parent= (
                 Name::new("score_parent"),
                 SpatialBundle::from_transform(Transform{
-                    translation: Vec3::new(37., 7., 999.),
+                    translation: Vec3::new(37., 7., 222.),
                     ..default()
                 })
             );
 
-            let score = (
+            let score_str = now_score.to_string();
+            let mut x_offset = 0.;
+            let offset = 13.;
+            let vstr_now = score_str
+                .split("")
+                .filter(|&f| f != "")
+                .map(|str| {
+                    let e = commands.spawn(
+                        (
+                            Name::new("num"),
+                            SpriteBundle {
+                                texture: fb_assets.get_middle_num(str),
+                                transform: Transform {
+                                    translation: Vec3::new(x_offset, 0., 0.),
+                                    ..default()
+                                },
+                                ..default()
+                            }
+                        )
+                    ).id();
+                    x_offset += offset;
+                    return e;
+                })
+                .collect::<Vec<_>>();
 
-            );
 
             let best_parent = (
                 Name::new("best_parent"),
                 SpatialBundle::from_transform(Transform{
-                    translation: Vec3::new(37., -14., 999.),
+                    translation: Vec3::new(37., -14., 222.),
                     ..default()
                 })
+            );
+
+            let score_str = loaded_best_score.to_string();
+            let mut x_offset = 0.;
+            let offset = 13.;
+            let vstr_best = score_str
+                .split("")
+                .filter(|&f| f != "")
+                .map(|str| {
+                    let e = commands.spawn(
+                        (
+                            Name::new("num"),
+                            SpriteBundle {
+                                texture: fb_assets.get_middle_num(str),
+                                transform: Transform {
+                                    translation: Vec3::new(x_offset, 0., 0.),
+                                    ..default()
+                                },
+                                ..default()
+                            }
+                        )
+                    ).id();
+                    x_offset += offset;
+                    return e;
+                })
+                .collect::<Vec<_>>();
+
+            let result_parent = (
+                Name::new("result parent"),
+                InResult,
+                SpatialBundle::default(),
+            );
+
+            let new = (
+                Name::new("new"),
+                SpriteBundle {
+                    texture: fb_assets.label_new.clone(),
+                    transform: Transform {
+                        translation: Vec3::new(19., -4., 10.),
+                        ..default()
+                    },
+                    ..default()
+                }
+            );
+
+            let sparkle = (
+                Name::new("spakle"),
+                Sparkle,
+                SparkleAniTimer(Timer::new(Duration::from_millis(150), TimerMode::Repeating)),
+                SpriteBundle {
+                    texture: fb_assets.gen_sparkle_atlas_texture.clone(),
+                    ..default()
+                },
+                TextureAtlas {
+                    index: 0,
+                    layout: fb_assets.gen_sparkle_atlas_layout.clone(),
+                }
             );
 
             let entity = q_bg.single();
             commands.entity(entity)
                 .with_children(|parent| {
-                    parent.spawn(gameover_parent)
+                    parent.spawn(result_parent)
                         .with_children(|parent| {
-                            parent.spawn(gameover);
+                            parent.spawn(gameover_parent)
+                            .with_children(|parent| {
+                                parent.spawn(gameover);
+                            });
+                            parent.spawn(panel_parent)
+                                .with_children(|parent| {
+                                    parent.spawn(panel);
+                                    parent.spawn(score_parent)
+                                        .push_children(vstr_now.as_slice());
+                                    parent.spawn(best_parent)
+                                        .push_children(vstr_best.as_slice());
+                                    if is_new {
+                                        parent.spawn(new);
+                                    }
+                                    if now_score >= 1 {
+                                        parent.spawn(medal_parent)
+                                        .with_children(|parent| {
+                                            parent.spawn(medal);
+                                            parent.spawn(sparkle);
+                                        });
+                                    }
+                                });
+                            parent.spawn(ok);
                         });
-                    parent.spawn(panel_parent)
-                        .with_children(|parent| {
-                            parent.spawn(panel);
-                        });
-                    parent.spawn(ok);
                 });
         }
     }
@@ -418,6 +568,28 @@ pub fn tween_callback_mask_center_back(
         if event.user_data == TWEEN_MASK_CENTER_BACK {
             if let Ok(mut transform) = q_mask.get_single_mut() {
                 transform.translation.z = -1.;
+            }
+        }
+    }
+}
+
+pub fn spakle_animation(
+    atlases: ResMut<Assets<TextureAtlasLayout>>,
+    time: Res<Time>,
+    mut q_ani: Query<(&mut TextureAtlas, &mut SparkleAniTimer, &mut Transform), With<Sparkle>>
+) {
+    for (mut at, mut ti, mut transform) in &mut q_ani {
+        ti.0.tick(time.delta());
+        if ti.0.just_finished() {
+            let a = &at.layout;
+            let a = atlases.get(a.id()).unwrap();
+            
+            at.index = (at.index + 1) % a.textures.len();
+            if at.index == 0 {
+                let rx = rand::thread_rng().gen_range(-8.0..8.0);
+                let ry = rand::thread_rng().gen_range(-8.0..8.0);
+                transform.translation.x = rx;
+                transform.translation.y = ry;
             }
         }
     }

@@ -108,16 +108,7 @@ pub fn enter(
                         ani.state = AnimatorState::Paused;
                     }
                 },
-                _ => {
-                    // next_state.set(States::Game(Game::GamePause));
-                    // if let Some(mut ec) = commands.get_entity(event.target) {
-                    //     ec.insert(resume_sprite.clone());
-                    // }
-                    // time.pause();
-                    // if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                    //     ani.state = AnimatorState::Paused;
-                    // }
-                },
+                _ => {},
             };
         }),
     );

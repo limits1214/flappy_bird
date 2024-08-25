@@ -12,7 +12,6 @@ pub fn score_up(
     for _ in reader.read() {
         config.score += 1;
         
-        ////
         if let Ok((entity, transform, children)) = score_parent.get_single() {
             // 기존 제거
             for &entity in children {
@@ -21,7 +20,6 @@ pub fn score_up(
                 }
             }
 
-            //
             let score_str = config.score.to_string();
             let mut x_offset = 0.;
             let offset = 13.;

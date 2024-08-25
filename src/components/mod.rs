@@ -10,6 +10,7 @@ pub mod puase;
 pub mod pipe;
 pub mod score;
 pub mod result;
+pub mod sparkle;
 
 use bevy::prelude::*;
 

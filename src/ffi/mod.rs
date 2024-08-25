@@ -14,7 +14,7 @@ mod android;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Score {
-    score: u32
+    pub score: u32
 }
 
 pub trait FfiKv {

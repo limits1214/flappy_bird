@@ -110,6 +110,8 @@ pub struct FlappyBirdAssets {
     // generated atlas
     pub gen_bird_atlas_layout: Handle<TextureAtlasLayout>,
     pub gen_bird_atlas_texture: Handle<Image>,
+    pub gen_sparkle_atlas_layout: Handle<TextureAtlasLayout>,
+    pub gen_sparkle_atlas_texture: Handle<Image>,
 }
 
 impl FlappyBirdAssets {
@@ -125,6 +127,22 @@ impl FlappyBirdAssets {
             "7" => self.number_large_7.clone(),
             "8" => self.number_large_8.clone(),
             "9" => self.number_large_9.clone(),
+            _ => unreachable!()
+        }
+    }
+
+    pub fn get_middle_num(&self, num: &str) -> Handle<Image> {
+        match num {
+            "0" => self.number_middle_0.clone(),
+            "1" => self.number_middle_1.clone(),
+            "2" => self.number_middle_2.clone(),
+            "3" => self.number_middle_3.clone(),
+            "4" => self.number_middle_4.clone(),
+            "5" => self.number_middle_5.clone(),
+            "6" => self.number_middle_6.clone(),
+            "7" => self.number_middle_7.clone(),
+            "8" => self.number_middle_8.clone(),
+            "9" => self.number_middle_9.clone(),
             _ => unreachable!()
         }
     }
