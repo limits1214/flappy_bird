@@ -1,5 +1,5 @@
 use std::time::Duration;
-use crate::{constant::TWEEN_SPARKLE_START, my_extensions::*};
+use crate::{constant::{BRONZE_MEDAL_CUT, GOLD_MEDAL_CUT, PLATINUM_MEDAL_CUT, SILVER_MEDAL_CUT, TWEEN_SPARKLE_START}, my_extensions::*};
 use bevy::{color::palettes::css::{BLACK, WHITE}, prelude::*};
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{lens::{SpriteColorLens, TransformPositionLens}, Animator, BoxedTweenable, Delay, EaseFunction, Tracks, Tween, TweenCompleted, Tweenable};
@@ -547,25 +547,25 @@ pub fn tween_callback_panel_up(
             let medal = (
                 Name::new("medal"),
                 Animator::new(medal_seq),
-                if now_score >= 4 {
+                if now_score >= PLATINUM_MEDAL_CUT.into() {
                     SpriteBundle {
                         sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_platinum.clone(),
                         ..default()
                     }
-                } else if now_score >= 3 {
+                } else if now_score >= GOLD_MEDAL_CUT.into() {
                     SpriteBundle {
                         sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_gold.clone(),
                         ..default()
                     }
-                } else if now_score >= 2 {
+                } else if now_score >= SILVER_MEDAL_CUT.into() {
                     SpriteBundle {
                         sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_silver.clone(),
                         ..default()
                     }
-                } else if now_score >= 1 {
+                } else if now_score >= BRONZE_MEDAL_CUT.into() {
                     SpriteBundle {
                         sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_bronze.clone(),
@@ -673,7 +673,7 @@ pub fn tween_callback_panel_up(
                     if is_new {
                         parent.spawn(new);
                     }
-                    if now_score >= 1 {
+                    if now_score >= BRONZE_MEDAL_CUT.into() {
                         parent.spawn(medal_parent)
                         .with_children(|parent| {
                             parent.spawn(medal);

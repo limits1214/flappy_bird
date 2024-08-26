@@ -15,3 +15,8 @@ pub const TWEEN_RESULT_TO_MENU: u64 = 4;
 pub const TWEEN_PANEL_UP_END: u64 =  5;
 
 pub const TWEEN_SPARKLE_START: u64 = 6;
+
+pub const BRONZE_MEDAL_CUT: u8 = 10;
+pub const SILVER_MEDAL_CUT: u8 = 20;
+pub const GOLD_MEDAL_CUT: u8 = 30;
+pub const PLATINUM_MEDAL_CUT: u8 = 40;
