@@ -1,7 +1,12 @@
 use avian2d::prelude::{Gravity, GravityScale, Mass};
 use bevy::{prelude::*, window::WindowResized};
 
-use crate::{components::{ resize::Resizable}, constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH}, events::resize::ResizeEvent, resources::resize_scale::ResizeScale};
+use crate::{
+    components::resize::Resizable,
+    constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH},
+    events::resize::ResizeEvent,
+    resources::resize_scale::ResizeScale,
+};
 
 pub fn resize(
     q_window: Query<&Window>,

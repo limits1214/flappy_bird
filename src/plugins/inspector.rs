@@ -1,5 +1,8 @@
 use bevy::{prelude::*, window::PrimaryWindow};
-use bevy_inspector_egui::{bevy_egui::{EguiContext, EguiPlugin}, egui, DefaultInspectorConfigPlugin};
+use bevy_inspector_egui::{
+    bevy_egui::{EguiContext, EguiPlugin},
+    egui, DefaultInspectorConfigPlugin,
+};
 use iyes_perf_ui::{entries::PerfUiBundle, PerfUiPlugin};
 
 pub struct InspectorPlugin;
@@ -7,28 +10,25 @@ pub struct InspectorPlugin;
 impl Plugin for InspectorPlugin {
     fn build(&self, app: &mut App) {
         //iyes_perf_ui
-        app
-            .add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
+        app.add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
             .add_plugins(bevy::diagnostic::EntityCountDiagnosticsPlugin)
             .add_plugins(bevy::diagnostic::SystemInformationDiagnosticsPlugin)
             .add_plugins(PerfUiPlugin)
             .add_systems(Startup, |mut commands: Commands| {
                 commands.spawn(PerfUiBundle::default());
             });
-        
+
         //egui
-        app
-            .add_plugins(EguiPlugin)
+        app.add_plugins(EguiPlugin)
             .add_plugins(DefaultInspectorConfigPlugin)
             .add_systems(Update, inspector_ui);
-
     }
 }
 
-fn inspector_ui(world: &mut World,) {
+fn inspector_ui(world: &mut World) {
     let Ok(egui_context) = world
-    .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
-    .get_single(world)
+        .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
+        .get_single(world)
     else {
         return;
     };
@@ -37,7 +37,6 @@ fn inspector_ui(world: &mut World,) {
     egui::Window::new("UI").show(egui_context.get_mut(), |ui| {
         egui::ScrollArea::vertical().show(ui, |ui| {
             bevy_inspector_egui::bevy_inspector::ui_for_world(world, ui);
-            
         });
     });
 }

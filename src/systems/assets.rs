@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use crate::resources::prelude::*;
-use crate::states::prelude::*;
+
+use crate::{prelude::FlappyBirdAssets, states::MyStates};
 
 pub fn loading_ui() {
     info!("loading_ui");

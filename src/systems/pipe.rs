@@ -1,7 +1,11 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::{components::game::{PipeParent, PipePoint, PointEarned}, constant::Z_INDEX_1, resources::assets::FlappyBirdAssets};
+use crate::{
+    components::game::{PipeParent, PipePoint, PointEarned},
+    constant::Z_INDEX_1,
+    resources::assets::FlappyBirdAssets,
+};
 
 pub fn pipe_movement(
     mut commands: Commands,

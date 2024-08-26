@@ -9,7 +9,8 @@ pub enum MyStates {
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Assets {
-    Loading, Gen,
+    Loading,
+    Gen,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]

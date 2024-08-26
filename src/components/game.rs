@@ -1,8 +1,6 @@
-
 use bevy::prelude::*;
 
 use super::timer::BirdAnimateTimer;
-
 
 #[derive(Component)]
 pub struct Bg;
@@ -36,14 +34,11 @@ pub struct GroundCollider;
 #[derive(Component)]
 pub struct Guide;
 
-
 #[derive(Component, Clone)]
 pub struct Pipe;
 
-
 #[derive(Component, Clone)]
 pub struct PipeParent;
-
 
 #[derive(Component, Clone)]
 pub struct PipePoint;
@@ -51,10 +46,8 @@ pub struct PipePoint;
 #[derive(Component, Clone)]
 pub struct PointEarned;
 
-
 #[derive(Component)]
 pub struct PanelParent;
-
 
 #[derive(Component)]
 pub struct ScoreParent;
@@ -65,8 +58,5 @@ pub struct NowScore(pub u32);
 #[derive(Component, Debug)]
 pub struct BestScore(pub u32);
 
-
-
 #[derive(Component)]
 pub struct Sparkle;
-

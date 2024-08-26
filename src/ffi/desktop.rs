@@ -1,7 +1,9 @@
-
-use std::{io::{Read, Write}, path::PathBuf};
-use directories::ProjectDirs;
 use super::{Ffi, FfiKv};
+use directories::ProjectDirs;
+use std::{
+    io::{Read, Write},
+    path::PathBuf,
+};
 
 const QUALIFIER: &str = "qualifier";
 const ORGANIZATION: &str = "organization";
@@ -15,7 +17,7 @@ impl FfiKv for Ffi {
             let mut file_path = PathBuf::from(path);
             file_path.push(KV_DIR);
             file_path.push(key);
-            
+
             let mut file = match std::fs::File::open(&file_path) {
                 Ok(file) => file,
                 Err(e) => {
@@ -79,9 +81,7 @@ fn get_test() {
 #[test]
 fn set_test() {
     use super::Score;
-    let score = Score {
-        score: 1200
-    };
+    let score = Score { score: 1200 };
     let testjson = serde_json::to_string(&score).unwrap();
     Ffi::set("test", &testjson);
 }

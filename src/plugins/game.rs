@@ -1,61 +1,58 @@
-use bevy::prelude::*;
 use crate::events::game::{JumpEvent, ResultEvent, ScoreUpEvent};
 use crate::resources::game::GameConfig;
 use crate::states::{Game, MyStates};
 use crate::systems::prelude::*;
+use bevy::prelude::*;
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_event::<JumpEvent>()
+        app.add_event::<JumpEvent>()
             .add_event::<ScoreUpEvent>()
             .add_event::<ResultEvent>()
             .insert_resource(GameConfig { score: 0 })
             .add_systems(OnEnter(MyStates::Game(Game::Init)), game_enter)
             .add_systems(
                 Update,
-                (
-                    bird_animation, ground_animation, touch
-                ).run_if(
+                (bird_animation, ground_animation, touch).run_if(
                     in_state(MyStates::Game(Game::Guide))
-                        .or_else(in_state(MyStates::Game(Game::Game)))
-                )
+                        .or_else(in_state(MyStates::Game(Game::Game))),
+                ),
             )
             .add_systems(
-                Update, 
-                (pipe_movement, bird_colliding_check)
-                    .run_if(in_state(MyStates::Game(Game::Game)))
+                Update,
+                (pipe_movement, bird_colliding_check).run_if(in_state(MyStates::Game(Game::Game))),
             )
             .add_systems(
                 Update,
                 (score_up)
                     .after(bird_colliding_check)
-                    .run_if(on_event::<ScoreUpEvent>())
+                    .run_if(on_event::<ScoreUpEvent>()),
             )
             .add_systems(
-                Update, 
+                Update,
                 (on_result)
                     .after(bird_colliding_check)
-                    .run_if(on_event::<ResultEvent>())
+                    .run_if(on_event::<ResultEvent>()),
             )
             .add_systems(
-                Update, 
+                Update,
                 (spakle_animation, score_couting_ani)
-                    .run_if(in_state(MyStates::Game(Game::Result)))
+                    .run_if(in_state(MyStates::Game(Game::Result))),
             )
             .add_systems(
                 OnTransition {
                     entered: MyStates::MainMenu,
                     exited: MyStates::Game(Game::Result),
-                }, trsition_result_on_main
+                },
+                trsition_result_on_main,
             )
             .add_systems(
                 OnTransition {
                     entered: MyStates::Game(Game::Game),
                     exited: MyStates::Game(Game::Result),
-                }, trsition_result_on_main
-            )
-            ;
+                },
+                trsition_result_on_main,
+            );
     }
 }

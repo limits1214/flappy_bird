@@ -5,7 +5,10 @@ pub struct Mask(pub MaskSide);
 
 #[derive(Debug, PartialEq)]
 pub enum MaskSide {
-    Left, Up, Right, Down
+    Left,
+    Up,
+    Right,
+    Down,
 }
 
 #[derive(Component)]

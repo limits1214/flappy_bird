@@ -1,13 +1,13 @@
-use bevy::prelude::*;
+use crate::components::prelude::*;
+use crate::constant::*;
+use crate::events::prelude::*;
+use crate::resources::prelude::*;
+use crate::states::prelude::*;
 use avian2d::prelude::*;
+use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{Animator, AnimatorState};
 use rand::Rng;
-use crate::components::prelude::*;
-use crate::resources::prelude::*;
-use crate::events::prelude::*;
-use crate::states::prelude::*;
-use crate::constant::*;
 
 pub fn trsition_result_on_main(
     mut commands: Commands,
@@ -23,9 +23,7 @@ pub fn trsition_result_on_main(
     }
 }
 
-pub fn trsition_result_to_game() {
-
-}
+pub fn trsition_result_to_game() {}
 
 pub fn game_enter(
     mut commands: Commands,
@@ -50,10 +48,9 @@ pub fn game_enter(
         BirdBundle::default(),
         RigidBody::Static,
         LockedAxes::ROTATION_LOCKED,
-        Collider::circle(17./2.),
+        Collider::circle(17. / 2.),
         ColliderDensity(0.0),
         Mass(5.0),
-        
         // LinearDamping(0.0),
         // ColliderDensity(2.5),
         // Mass(5.0),
@@ -81,59 +78,59 @@ pub fn game_enter(
             translation: Vec3::new(-55., 110., Z_INDEX_10),
             ..default()
         }),
-        On::<Pointer<Click>>::run(move |
-            event: Listener<Pointer<Click>>,
-            now_state: Res<State<MyStates>>,
-            mut next_state: ResMut<NextState<MyStates>>,
-            mut commands: Commands,
-            mut time: ResMut<Time<Physics>>,
-            mut q_bird_tween: Query<&mut Animator<Transform>, With<Bird>>,
-            | {
-            info!("pause!!");
-            match *now_state.get() {
-                MyStates::Game(Game::GamePause) => {
-                    next_state.set(MyStates::Game(Game::Game));
-                    if let Some(mut ec) = commands.get_entity(event.target) {
-                        ec.insert(pause_sprite.clone());
+        On::<Pointer<Click>>::run(
+            move |event: Listener<Pointer<Click>>,
+                  now_state: Res<State<MyStates>>,
+                  mut next_state: ResMut<NextState<MyStates>>,
+                  mut commands: Commands,
+                  mut time: ResMut<Time<Physics>>,
+                  mut q_bird_tween: Query<&mut Animator<Transform>, With<Bird>>| {
+                info!("pause!!");
+                match *now_state.get() {
+                    MyStates::Game(Game::GamePause) => {
+                        next_state.set(MyStates::Game(Game::Game));
+                        if let Some(mut ec) = commands.get_entity(event.target) {
+                            ec.insert(pause_sprite.clone());
+                        }
+                        time.unpause();
+                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                            ani.state = AnimatorState::Playing;
+                        }
                     }
-                    time.unpause();
-                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                        ani.state = AnimatorState::Playing;
+                    MyStates::Game(Game::GuidePause) => {
+                        next_state.set(MyStates::Game(Game::Guide));
+                        if let Some(mut ec) = commands.get_entity(event.target) {
+                            ec.insert(pause_sprite.clone());
+                        }
+                        time.unpause();
+                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                            ani.state = AnimatorState::Playing;
+                        }
                     }
-                },
-                MyStates::Game(Game::GuidePause) => {
-                    next_state.set(MyStates::Game(Game::Guide));
-                    if let Some(mut ec) = commands.get_entity(event.target) {
-                        ec.insert(pause_sprite.clone());
+                    MyStates::Game(Game::Guide) => {
+                        next_state.set(MyStates::Game(Game::GuidePause));
+                        if let Some(mut ec) = commands.get_entity(event.target) {
+                            ec.insert(pause_sprite.clone());
+                        }
+                        time.pause();
+                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                            ani.state = AnimatorState::Paused;
+                        }
                     }
-                    time.unpause();
-                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                        ani.state = AnimatorState::Playing;
+                    MyStates::Game(Game::Game) => {
+                        next_state.set(MyStates::Game(Game::GamePause));
+                        if let Some(mut ec) = commands.get_entity(event.target) {
+                            ec.insert(pause_sprite.clone());
+                        }
+                        time.pause();
+                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
+                            ani.state = AnimatorState::Paused;
+                        }
                     }
-                },
-                MyStates::Game(Game::Guide) => {
-                    next_state.set(MyStates::Game(Game::GuidePause));
-                    if let Some(mut ec) = commands.get_entity(event.target) {
-                        ec.insert(pause_sprite.clone());
-                    }
-                    time.pause();
-                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                        ani.state = AnimatorState::Paused;
-                    }
-                },
-                MyStates::Game(Game::Game) => {
-                    next_state.set(MyStates::Game(Game::GamePause));
-                    if let Some(mut ec) = commands.get_entity(event.target) {
-                        ec.insert(pause_sprite.clone());
-                    }
-                    time.pause();
-                    if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                        ani.state = AnimatorState::Paused;
-                    }
-                },
-                _ => {},
-            };
-        }),
+                    _ => {}
+                };
+            },
+        ),
     );
 
     let pause_btn_sprite = (
@@ -145,7 +142,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
 
     let get_ready = (
@@ -157,7 +154,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
 
     let score = (
@@ -166,7 +163,7 @@ pub fn game_enter(
         SpatialBundle::from_transform(Transform {
             translation: Vec3::new(0., 110., Z_INDEX_1),
             ..default()
-        })
+        }),
     );
 
     let num_0 = (
@@ -178,7 +175,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
 
     let ground = (
@@ -191,7 +188,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
     let ground_collider = (
         Name::new("groundCollider"),
@@ -201,7 +198,7 @@ pub fn game_enter(
         TransformBundle::from_transform(Transform {
             translation: Vec3::new(0., -100., Z_INDEX_1),
             ..default()
-        })
+        }),
     );
 
     let sky_collider = (
@@ -212,7 +209,7 @@ pub fn game_enter(
         TransformBundle::from_transform(Transform {
             translation: Vec3::new(0., 200., Z_INDEX_1),
             ..default()
-        })
+        }),
     );
 
     let guide = (
@@ -224,16 +221,10 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
 
-    let guide_parent = (
-        Name::new("guide"),
-        Guide,
-        SpatialBundle {
-            ..default()
-        }
-    );
+    let guide_parent = (Name::new("guide"), Guide, SpatialBundle { ..default() });
 
     let pipe_bottom_sprite = fb_assets.pipe_green_bottom.clone();
     let pipe_top_sprite = fb_assets.pipe_green_top.clone();
@@ -243,9 +234,7 @@ pub fn game_enter(
         Sensor,
         PipePoint,
         Collider::rectangle(5., 300.),
-        SpatialBundle::from_transform(Transform {
-            ..default()
-        })
+        SpatialBundle::from_transform(Transform { ..default() }),
     );
 
     let pipe_bottom = (
@@ -260,7 +249,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
 
     let pipe_top = (
@@ -275,7 +264,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
 
     let r = rand::thread_rng().gen_range((-30.0)..(100.0));
@@ -290,7 +279,7 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
     let pipe_parent3 = (
         Name::new("pipe_parent3"),
@@ -302,41 +291,35 @@ pub fn game_enter(
                 ..default()
             },
             ..default()
-        }
+        },
     );
-    
-    commands.spawn(bg)
-        .with_children(|parent| {
-            parent.spawn(pause_btn)
-                .with_children(|parent| {
-                    parent.spawn(pause_btn_sprite);
-                });
-            parent.spawn(score)
-                .with_children(|parent| {
-                    parent.spawn(num_0);
-                });
-            parent.spawn(guide_parent)
-                .with_children(|parent| {
-                    parent.spawn(get_ready);
-                    parent.spawn(guide);
-                });
-            parent.spawn(pipe_parent2)
-                .with_children(|parent| {
-                    parent.spawn(pipe_top.clone());
-                    parent.spawn(pipe_bottom.clone());
-                    parent.spawn(pipe_score_collider.clone());
-                });
-            parent.spawn(pipe_parent3)
-                .with_children(|parent| {
-                    parent.spawn(pipe_top);
-                    parent.spawn(pipe_bottom);
-                    parent.spawn(pipe_score_collider);
-                });
-            parent.spawn(bird);
-            parent.spawn(ground);
-            parent.spawn(ground_collider);
-            parent.spawn(sky_collider);
+
+    commands.spawn(bg).with_children(|parent| {
+        parent.spawn(pause_btn).with_children(|parent| {
+            parent.spawn(pause_btn_sprite);
         });
+        parent.spawn(score).with_children(|parent| {
+            parent.spawn(num_0);
+        });
+        parent.spawn(guide_parent).with_children(|parent| {
+            parent.spawn(get_ready);
+            parent.spawn(guide);
+        });
+        parent.spawn(pipe_parent2).with_children(|parent| {
+            parent.spawn(pipe_top.clone());
+            parent.spawn(pipe_bottom.clone());
+            parent.spawn(pipe_score_collider.clone());
+        });
+        parent.spawn(pipe_parent3).with_children(|parent| {
+            parent.spawn(pipe_top);
+            parent.spawn(pipe_bottom);
+            parent.spawn(pipe_score_collider);
+        });
+        parent.spawn(bird);
+        parent.spawn(ground);
+        parent.spawn(ground_collider);
+        parent.spawn(sky_collider);
+    });
 
     ew_resize.send(ResizeEvent);
     next_state.set(MyStates::Game(Game::Guide));

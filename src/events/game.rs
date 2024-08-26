@@ -1,5 +1,8 @@
 use bevy::prelude::*;
-use bevy_mod_picking::{events::{Down, Pointer}, prelude::ListenerInput};
+use bevy_mod_picking::{
+    events::{Down, Pointer},
+    prelude::ListenerInput,
+};
 
 #[derive(Event)]
 pub struct JumpEvent(pub Entity, pub f32);
@@ -12,7 +15,6 @@ impl From<ListenerInput<Pointer<Down>>> for JumpEvent {
 
 #[derive(Event)]
 pub struct ScoreUpEvent;
-
 
 #[derive(Event)]
 pub struct ResultEvent;
