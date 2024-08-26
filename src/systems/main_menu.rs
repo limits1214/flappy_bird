@@ -2,8 +2,9 @@
 use std::time::Duration;
 
 use bevy::{color::palettes::css::{BLACK, BLUE, RED, WHITE}, prelude::*};
+use bevy_kira_audio::prelude::*;
 use bevy_mod_picking::{events::Click, prelude::On};
-use bevy_tweening::{lens::{ColorMaterialColorLens, SpriteColorLens}, Animator, EaseFunction, Tween, TweenCompleted};
+use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween, TweenCompleted};
 use crate::{components::{bird::BirdBundle, button::PlayBtn, ground::Ground, main_menu::Title, mask::{Mask, MaskCenter, MaskSide}, resize::Resizable, states::InMainMenu, Bg}, constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1}, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
 use bevy_mod_picking::prelude::*;
 
@@ -77,7 +78,8 @@ pub fn enter(
         On::<Pointer<DragEnd>>::target_commands_mut(move |evt, target_commands| {
             target_commands.insert(normal2.clone());
         }),
-        On::<Pointer<Click>>::run(|mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>, mut commands: Commands| {
+        On::<Pointer<Click>>::run(|mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>, mut commands: Commands, audio: Res<Audio>, fb_assets: Res<FlappyBirdAssets>| {
+            audio.play(fb_assets.sfx_swooshing.clone());
             if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
                 transform.translation.z = 999.;
                 let transition_tween = Tween::new(

@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_framepace::{FramepaceSettings, Limiter};
+use bevy_kira_audio::AudioPlugin;
 use bevy_mod_picking::DefaultPickingPlugins;
 use avian2d::prelude::*;
 use bevy_tweening::TweeningPlugin;
@@ -18,10 +19,11 @@ impl Plugin for AppPlugin {
             .add_plugins(DefaultPickingPlugins)
             .add_plugins(PhysicsPlugins::default())
             .add_plugins(TweeningPlugin)
-            // .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
-            // .insert_resource(FramepaceSettings{
-            //     limiter: Limiter::from_framerate(TARGET_FRAME_RATE)
-            // })
+            .add_plugins(AudioPlugin)
+            .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
+            .insert_resource(FramepaceSettings{
+                limiter: Limiter::from_framerate(TARGET_FRAME_RATE)
+            })
             ;
 
         // 내부 내부 설정

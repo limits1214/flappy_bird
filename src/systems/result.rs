@@ -1,7 +1,6 @@
 use std::time::Duration;
 use crate::{constant::TWEEN_SPARKLE_START, my_extensions::*};
 use bevy::{color::palettes::css::{BLACK, WHITE}, prelude::*};
-use bevy_inspector_egui::egui::load;
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{lens::{SpriteColorLens, TransformPositionLens}, Animator, BoxedTweenable, Delay, EaseFunction, Tracks, Tween, TweenCompleted, Tweenable};
 use rand::Rng;
