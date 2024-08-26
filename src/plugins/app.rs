@@ -6,7 +6,7 @@ use avian2d::prelude::*;
 use bevy_tweening::TweeningPlugin;
 use crate::{constant::TARGET_FRAME_RATE, states::{Assets, States}};
 
-use super::{assets::AssetPlugin, guide::GuidePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin};
+use super::{assets::AssetPlugin, game::GamePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin, tween_callback::TweenCallbackPlugin};
 
 /// 공통 게임 설정
 pub struct AppPlugin;
@@ -32,7 +32,8 @@ impl Plugin for AppPlugin {
             .add_plugins(ResizePlugin)
             .add_plugins(AssetPlugin)
             .add_plugins(MainMenuPlugin)
-            .add_plugins(GuidePlugin);
+            .add_plugins(TweenCallbackPlugin)
+            .add_plugins(GamePlugin);
 
         // 2d 카메라 생성
         app

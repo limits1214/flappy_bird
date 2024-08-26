@@ -9,3 +9,10 @@ impl From<ListenerInput<Pointer<Down>>> for JumpEvent {
         Self(value.target, value.hit.depth)
     }
 }
+
+#[derive(Event)]
+pub struct ScoreUpEvent;
+
+
+#[derive(Event)]
+pub struct ResultEvent;

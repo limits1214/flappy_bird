@@ -5,7 +5,7 @@ use bevy::{color::palettes::css::{BLACK, BLUE, RED, WHITE}, prelude::*};
 use bevy_kira_audio::prelude::*;
 use bevy_mod_picking::{events::Click, prelude::On};
 use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween, TweenCompleted};
-use crate::{components::{bird::BirdBundle, button::PlayBtn, ground::Ground, main_menu::Title, mask::{Mask, MaskCenter, MaskSide}, resize::Resizable, states::InMainMenu, Bg}, constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1}, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
+use crate::{components::{ game::{BirdBundle, Ground}, main_menu::{PlayBtn, Title}, mask::{Mask, MaskCenter, MaskSide}, resize::Resizable, states::InMainMenu}, constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1}, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
 use bevy_mod_picking::prelude::*;
 
 pub fn enter(
@@ -60,8 +60,6 @@ pub fn enter(
             ..default()
         }
     );
-
-    
 
     let pressed = fb_assets.button_play_pressed.clone();
     let normal = fb_assets.button_play_normal.clone();
@@ -160,30 +158,5 @@ pub fn title_animation(
 ) {
     if let Ok(mut transform) = q_title.get_single_mut() {
         transform.translation.y = 60. + (time.elapsed_seconds() * 2.).sin() * 2.;
-    }
-}
-
-pub fn tween_callback_menu_to_game(
-    mut reader: EventReader<TweenCompleted>,
-    mut next_state: ResMut<NextState<States>>,
-) {
-    for event in reader.read() {
-        if event.user_data == TWEEN_MENU_TO_GAME {
-            next_state.set(States::Game(Game::Init));
-            
-        }
-    }
-}
-
-pub fn tween_callback_mask_center_back(
-    mut reader: EventReader<TweenCompleted>,
-    mut q_mask: Query<&mut Transform, With<MaskCenter>>
-) {
-    for event in reader.read() {
-        if event.user_data == TWEEN_MASK_CENTER_BACK {
-            if let Ok(mut transform) = q_mask.get_single_mut() {
-                transform.translation.z = -1.;
-            }
-        }
     }
 }

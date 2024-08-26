@@ -10,3 +10,4 @@ pub mod ground;
 pub mod touch;
 pub mod pipe;
 pub mod score;
+pub mod tween_callback;

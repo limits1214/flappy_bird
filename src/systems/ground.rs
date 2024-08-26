@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
-use crate::components::ground::Ground;
+use crate::components::game::Ground;
+
 
 pub fn ground_animation(
     time: Res<Time>,

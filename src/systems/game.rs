@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{components::{result::InResult, states::InGame}, resources::config::GameConfig};
+use crate::{components::states::{InGame, InResult}, resources::game::GameConfig};
 
 pub fn trsition_result_on_main(
     mut commands: Commands,
@@ -14,11 +14,6 @@ pub fn trsition_result_on_main(
             ec.despawn_recursive();
         }
     }
-    // for e in &q_in_result {
-    //     if let Some(ec) = commands.get_entity(e) {
-    //         ec.despawn_recursive();
-    //     }
-    // }
 }
 
 pub fn trsition_result_to_game() {

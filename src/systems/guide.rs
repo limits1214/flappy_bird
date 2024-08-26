@@ -3,7 +3,7 @@ use avian2d::prelude::*;
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{Animator, AnimatorState};
 use rand::Rng;
-use crate::{components::{bird::{Bird, BirdBundle}, ground::{Ground, GroundCollider}, guide::Guide, pipe::{Pipe, PipeParent, PipePoint}, puase::PauseBtn, resize::Resizable, score::ScoreParent, states::InGame, Bg}, constant::{Z_INDEX_1, Z_INDEX_10}, events::{jump::JumpEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::Game};
+use crate::{components::{ game::{Bg, Bird, BirdBundle, Ground, GroundCollider, Guide, Pipe, PipeParent, PipePoint, ScoreParent}, resize::Resizable,  states::InGame}, constant::{Z_INDEX_1, Z_INDEX_10}, events::{ game::JumpEvent, resize::ResizeEvent}, resources::assets::FlappyBirdAssets, states::Game};
 use crate::states::States;
 pub fn enter(
     mut commands: Commands,

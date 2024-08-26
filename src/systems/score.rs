@@ -2,7 +2,7 @@ use std::borrow::{Borrow, BorrowMut};
 
 use bevy::{prelude::*, transform::commands};
 
-use crate::{components::score::ScoreParent, events::score::ScoreUpEvent, resources::{assets::FlappyBirdAssets, config::GameConfig}};
+use crate::{ components::game::ScoreParent, events::game::ScoreUpEvent, resources::{assets::FlappyBirdAssets, game::GameConfig}};
 
 pub fn score_up(
     mut commands: Commands,

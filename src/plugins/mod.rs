@@ -1,10 +1,10 @@
 mod app;
 mod assets;
 mod main_menu;
-mod game;
 mod mask;
 mod resize;
-mod guide;
+mod game;
+mod tween_callback;
 #[cfg(feature="inspector")]
 mod inspector;
 

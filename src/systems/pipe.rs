@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::{components::pipe::{Pipe, PipeParent, PipePoint, PointEarned}, constant::Z_INDEX_1, resources::{assets::FlappyBirdAssets, pipe_spawn_timer::PipeSpawnTimer}};
+use crate::{components::game::{PipeParent, PipePoint, PointEarned}, constant::Z_INDEX_1, resources::assets::FlappyBirdAssets};
 
 // pub fn pipe_spawn(
 //     mut commands: Commands,

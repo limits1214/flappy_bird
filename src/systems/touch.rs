@@ -5,9 +5,10 @@ use bevy::prelude::*;
 use avian2d::prelude::*;
 use bevy_tweening::lens::TransformRotationLens;
 use bevy_tweening::{Animator, Delay, EaseFunction, Tween};
-use crate::components::pipe::Pipe;
+use crate::components::game::{Bird, Guide};
+use crate::events::game::JumpEvent;
 use crate::states::{Game, States};
-use crate::{components::{bird::Bird, guide::Guide, Bg}, constant::PAUSE_BTN_DEPTH, events::jump::JumpEvent, resources::resize_scale::ResizeScale};
+use crate::{constant::PAUSE_BTN_DEPTH, resources::resize_scale::ResizeScale};
 
 pub fn touch(
     mut commands: Commands,

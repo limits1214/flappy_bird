@@ -6,3 +6,7 @@ pub struct InMainMenu;
 
 #[derive(Component)]
 pub struct InGame;
+
+
+#[derive(Component)]
+pub struct InResult;
