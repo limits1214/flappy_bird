@@ -2,6 +2,11 @@
 https://bitbucket.org/EdwardAngeles/godot-engine-tutorial-flappy-bird/src/master/
 
 
+1. vscode setting
+   1. rustalanayzer
+2. rustfmt setting
+3. .vscode add
+
 timeline
 1. bevy 추가
 2. inspector 피쳐 추가 및 관련 디펜던시 다운로드 및 주의사항 설명

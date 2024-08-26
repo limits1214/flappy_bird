@@ -1,4 +1,6 @@
 use crate::events::game::{JumpEvent, ResultEvent, ScoreUpEvent};
+use crate::prelude::animation::{bird_animation, score_couting_ani, spakle_animation};
+use crate::prelude::movement::{ground_movement, pipe_movement};
 use crate::resources::game::GameConfig;
 use crate::states::{Game, MyStates};
 use crate::systems::prelude::*;
@@ -14,7 +16,7 @@ impl Plugin for GamePlugin {
             .add_systems(OnEnter(MyStates::Game(Game::Init)), game_enter)
             .add_systems(
                 Update,
-                (bird_animation, ground_animation, touch).run_if(
+                (bird_animation, ground_movement, jump).run_if(
                     in_state(MyStates::Game(Game::Guide))
                         .or_else(in_state(MyStates::Game(Game::Game))),
                 ),

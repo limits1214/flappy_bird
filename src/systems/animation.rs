@@ -1,70 +1,23 @@
-use crate::{
-    components::{
-        game::{BestScore, NowScore, Sparkle},
-        timer::{ScoreCountingAniTimer, SparkleAniTimer},
-    },
-    constant::{
-        BRONZE_MEDAL_CUT, GOLD_MEDAL_CUT, PLATINUM_MEDAL_CUT, SILVER_MEDAL_CUT, TWEEN_SPARKLE_START,
-    },
-    events::game::ResultEvent,
-    my_extensions::*,
-    states::MyStates,
-};
-use bevy::{
-    color::palettes::css::{BLACK, WHITE},
-    prelude::*,
-};
-use bevy_mod_picking::prelude::*;
-use bevy_tweening::{
-    lens::{SpriteColorLens, TransformPositionLens},
-    Animator, BoxedTweenable, Delay, EaseFunction, Tracks, Tween, TweenCompleted, Tweenable,
-};
+use bevy::prelude::*;
 use rand::Rng;
-use std::time::Duration;
 
-use crate::{
-    components::mask::MaskCenter,
-    constant::{
-        TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_PANEL_UP_END, TWEEN_RESULT_TO_MENU,
-    },
-    ffi::{Ffi, FfiKv, Score},
-    resources::{assets::FlappyBirdAssets, game::GameConfig},
-    states::Game,
+use crate::prelude::{
+    BestScore, Bird, BirdAnimateTimer, FlappyBirdAssets, GameConfig, NowScore,
+    ScoreCountingAniTimer, Sparkle, SparkleAniTimer,
 };
-pub fn on_result(
-    mut commands: Commands,
-    mut reader: EventReader<ResultEvent>,
-    mut next_state: ResMut<NextState<MyStates>>,
-    mut q_mask_center: Query<(Entity, &mut Transform), With<MaskCenter>>,
+
+pub fn bird_animation(
+    atlases: ResMut<Assets<TextureAtlasLayout>>,
+    time: Res<Time>,
+    mut q_ani: Query<(&mut TextureAtlas, &mut BirdAnimateTimer), With<Bird>>,
 ) {
-    for _ in reader.read() {
-        info!("result");
+    for (mut at, mut ti) in &mut q_ani {
+        ti.0.tick(time.delta());
+        if ti.0.just_finished() {
+            let a = &at.layout;
+            let a = atlases.get(a.id()).unwrap();
 
-        if let Ok((entity, mut transform)) = q_mask_center.get_single_mut() {
-            transform.translation.z = 999.;
-            // 화면 하약색 깜빡임
-            let tween = Tween::new(
-                EaseFunction::QuadraticInOut,
-                Duration::from_millis(300),
-                SpriteColorLens {
-                    start: Color::srgba_u8(0, 0, 0, 0),
-                    end: Color::WHITE,
-                },
-            );
-
-            let tween2 = Tween::new(
-                EaseFunction::QuadraticInOut,
-                Duration::from_millis(300),
-                SpriteColorLens {
-                    start: Color::WHITE,
-                    end: Color::srgba_u8(0, 0, 0, 0),
-                },
-            )
-            .with_completed_event(TWEEN_DEATH_WHITE);
-            let seq = tween.then(tween2);
-
-            commands.entity(entity).insert(Animator::new(seq));
-            next_state.set(MyStates::Game(Game::Result));
+            at.index = (at.index + 1) % a.textures.len();
         }
     }
 }

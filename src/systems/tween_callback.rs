@@ -50,8 +50,10 @@ pub fn tween_callback_death_white(
     q_bg: Query<Entity, With<Bg>>,
     mut config: ResMut<GameConfig>,
 ) {
-    for event in reader.read() {
-        if event.user_data == TWEEN_DEATH_WHITE {
+    reader
+        .read()
+        .filter(|&event| event.user_data == TWEEN_DEATH_WHITE)
+        .for_each(|_event| {
             if let Ok(mut transform) = q_mask.get_single_mut() {
                 transform.translation.z = -1.;
             }
@@ -123,8 +125,8 @@ pub fn tween_callback_death_white(
                 EaseFunction::QuadraticInOut,
                 Duration::from_millis(500),
                 TransformPositionLens {
-                    start: Vec3::new(0., -300., 222.),
-                    end: Vec3::new(-0., 0., 222.),
+                    start: Vec3::new(0., -300., Z_INDEX_3),
+                    end: Vec3::new(-0., 0., Z_INDEX_3),
                 },
             )
             .with_completed_event(TWEEN_PANEL_UP_END);
@@ -133,7 +135,7 @@ pub fn tween_callback_death_white(
                 Name::new("panel parent"),
                 PanelParent,
                 SpatialBundle::from_transform(Transform {
-                    translation: Vec3::new(0., -300., 222.),
+                    translation: Vec3::new(0., -300., Z_INDEX_3),
                     ..default()
                 }),
                 Animator::new(seq),
@@ -155,7 +157,7 @@ pub fn tween_callback_death_white(
                 Name::new("now_score_parent"),
                 NowScore(0),
                 SpatialBundle::from_transform(Transform {
-                    translation: Vec3::new(37., 7., 222.),
+                    translation: Vec3::new(37., 7., Z_INDEX_3),
                     ..default()
                 }),
             );
@@ -209,7 +211,7 @@ pub fn tween_callback_death_white(
                 Name::new("best_score_parent"),
                 BestScore(loaded_best_score),
                 SpatialBundle::from_transform(Transform {
-                    translation: Vec3::new(37. + adjust_x, -14., 222.),
+                    translation: Vec3::new(37. + adjust_x, -14., Z_INDEX_3),
                     ..default()
                 }),
             );
@@ -243,8 +245,7 @@ pub fn tween_callback_death_white(
                     // parent.spawn(ok);
                 });
             });
-        }
-    }
+        });
 }
 
 pub fn tween_callback_result_to_menu(
@@ -295,9 +296,9 @@ pub fn tween_callback_panel_up(
             let tween_ok = Tween::new(
                 EaseFunction::QuadraticInOut,
                 Duration::from_millis(100),
-                SpriteColorLens {
-                    start: Color::srgba_u8(0, 0, 0, 0),
-                    end: WHITE.into(),
+                TransformPositionLens {
+                    start: Vec3::new(0., -60., Z_INDEX_MINUS),
+                    end: Vec3::new(0., -60., Z_INDEX_3),
                 },
             );
 
@@ -306,18 +307,18 @@ pub fn tween_callback_panel_up(
             let ok = (
                 Name::new("ok"),
                 SpriteBundle {
-                    sprite: Sprite {
-                        color: Color::srgba_u8(0, 0, 0, 0),
-                        ..default()
-                    },
+                    // sprite: Sprite {
+                    //     color: Color::srgba_u8(0, 0, 0, 0),
+                    //     ..default()
+                    // },
                     texture: fb_assets.button_ok.clone(),
                     transform: Transform {
-                        translation: Vec3::new(0., -60., 10.),
+                        translation: Vec3::new(0., -60., Z_INDEX_MINUS),
                         ..default()
                     },
                     ..default()
                 },
-                On::<Pointer<Down>>::target_component_mut::<Transform>(|event, transform| {
+                On::<Pointer<Down>>::target_component_mut::<Transform>(|_, transform| {
                     transform.translation.y = -61.;
                 }),
                 On::<Pointer<Up>>::target_component_mut::<Transform>(|event, transform| {
@@ -330,7 +331,7 @@ pub fn tween_callback_panel_up(
                     |mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>,
                      mut commands: Commands| {
                         if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
-                            transform.translation.z = 999.;
+                            transform.translation.z = MASK_CENTER_FORE_Z_INDEX;
                             let transition_tween = Tween::new(
                                 EaseFunction::QuarticInOut,
                                 Duration::from_millis(500),
@@ -361,7 +362,7 @@ pub fn tween_callback_panel_up(
             let medal_parent = (
                 Name::new("medal_parent"),
                 SpatialBundle::from_transform(Transform {
-                    translation: Vec3::new(-32., -4., 222.),
+                    translation: Vec3::new(-32., -4., Z_INDEX_4),
                     ..default()
                 }),
             );
@@ -369,10 +370,10 @@ pub fn tween_callback_panel_up(
             let medal_delay = Delay::new(Duration::from_millis(1000));
             let tween_medal = Tween::new(
                 EaseFunction::QuadraticInOut,
-                Duration::from_millis(100),
-                SpriteColorLens {
-                    start: Color::new_alpha_0(),
-                    end: WHITE.into(),
+                Duration::from_millis(1),
+                TransformPositionLens {
+                    start: Vec3::new(0., 0., Z_INDEX_MINUS),
+                    end: Vec3::new(0., 0., Z_INDEX_3),
                 },
             );
             let medal_seq = medal_delay.then(tween_medal);
@@ -382,35 +383,32 @@ pub fn tween_callback_panel_up(
                 Animator::new(medal_seq),
                 if now_score >= PLATINUM_MEDAL_CUT.into() {
                     SpriteBundle {
-                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_platinum.clone(),
+                        transform: Transform::from_xyz(0., 0., Z_INDEX_MINUS),
                         ..default()
                     }
                 } else if now_score >= GOLD_MEDAL_CUT.into() {
                     SpriteBundle {
-                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_gold.clone(),
+                        transform: Transform::from_xyz(0., 0., Z_INDEX_MINUS),
                         ..default()
                     }
                 } else if now_score >= SILVER_MEDAL_CUT.into() {
                     SpriteBundle {
-                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_silver.clone(),
+                        transform: Transform::from_xyz(0., 0., Z_INDEX_MINUS),
                         ..default()
                     }
                 } else if now_score >= BRONZE_MEDAL_CUT.into() {
                     SpriteBundle {
-                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_bronze.clone(),
+                        transform: Transform::from_xyz(0., 0., Z_INDEX_MINUS),
                         ..default()
                     }
                 } else {
                     SpriteBundle {
                         sprite: Sprite::alpah_0_sprite(),
-                        transform: Transform {
-                            translation: Vec3::new(0., 0., -999.),
-                            ..default()
-                        },
+                        transform: Transform::from_xyz(0., 0., Z_INDEX_MINUS),
                         ..default()
                     }
                 },
@@ -459,7 +457,7 @@ pub fn tween_callback_panel_up(
                     sprite: Sprite::alpah_0_sprite(),
                     texture: fb_assets.label_new.clone(),
                     transform: Transform {
-                        translation: Vec3::new(19., -4., 10.),
+                        translation: Vec3::new(19., -4., Z_INDEX_4),
                         ..default()
                     },
                     ..default()
@@ -484,7 +482,7 @@ pub fn tween_callback_panel_up(
                 SpriteBundle {
                     sprite: Sprite::alpah_0_sprite(),
                     texture: fb_assets.gen_sparkle_atlas_texture.clone(),
-                    transform: Transform::from_xyz(0., 0., 222.),
+                    transform: Transform::from_xyz(0., 0., Z_INDEX_5),
                     ..default()
                 },
                 TextureAtlas {

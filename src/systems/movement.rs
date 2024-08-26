@@ -2,10 +2,25 @@ use bevy::prelude::*;
 use rand::Rng;
 
 use crate::{
-    components::game::{PipeParent, PipePoint, PointEarned},
-    constant::Z_INDEX_1,
-    resources::assets::FlappyBirdAssets,
+    components::prelude::Title,
+    prelude::{Ground, PipeParent, PipePoint, PointEarned},
 };
+
+pub fn title_movement(time: Res<Time>, mut q_title: Query<&mut Transform, With<Title>>) {
+    if let Ok(mut transform) = q_title.get_single_mut() {
+        transform.translation.y = 60. + (time.elapsed_seconds() * 2.).sin() * 2.;
+    }
+}
+
+pub fn ground_movement(time: Res<Time>, mut q_ground: Query<&mut Transform, With<Ground>>) {
+    if let Ok(mut transform) = q_ground.get_single_mut() {
+        transform.translation.x -= 50. * time.delta_seconds();
+
+        if transform.translation.x <= -12. {
+            transform.translation.x = 12.;
+        }
+    }
+}
 
 pub fn pipe_movement(
     mut commands: Commands,

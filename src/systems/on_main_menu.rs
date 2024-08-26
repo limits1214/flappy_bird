@@ -4,23 +4,20 @@ use crate::{
     components::{
         game::{BirdBundle, Ground},
         main_menu::{PlayBtn, Title},
-        mask::{Mask, MaskCenter, MaskSide},
+        mask::MaskCenter,
         resize::Resizable,
         states::InMainMenu,
     },
     constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1},
     events::resize::ResizeEvent,
+    prelude::{MASK_CENTER_FORE_Z_INDEX, Z_INDEX_0},
     resources::assets::FlappyBirdAssets,
-    states::{Game, MyStates},
 };
-use bevy::{
-    color::palettes::css::{BLACK, BLUE, RED, WHITE},
-    prelude::*,
-};
+use bevy::{color::palettes::css::BLACK, prelude::*};
 use bevy_kira_audio::prelude::*;
 use bevy_mod_picking::prelude::*;
 use bevy_mod_picking::{events::Click, prelude::On};
-use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween, TweenCompleted};
+use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween};
 
 pub fn main_enter(
     mut commands: Commands,
@@ -34,6 +31,7 @@ pub fn main_enter(
         Resizable,
         SpriteBundle {
             texture: fb_assets.background_day.clone(),
+            transform: Transform::from_xyz(0., 0., Z_INDEX_0),
             ..default()
         },
     );
@@ -51,10 +49,7 @@ pub fn main_enter(
         BirdBundle::default(),
         SpriteBundle {
             texture: fb_assets.gen_bird_atlas_texture.clone(),
-            transform: Transform {
-                translation: Vec3::new(50., 0., 0.),
-                ..default()
-            },
+            transform: Transform::from_xyz(50., 0., 0.),
             ..default()
         },
         TextureAtlas {
@@ -67,10 +62,7 @@ pub fn main_enter(
         Name::new("lable_title"),
         SpriteBundle {
             texture: fb_assets.label_flappy_bird.clone(),
-            transform: Transform {
-                translation: Vec3::new(-10., 0., 0.),
-                ..default()
-            },
+            transform: Transform::from_xyz(-10., 0., 0.),
             ..default()
         },
     );
@@ -97,7 +89,7 @@ pub fn main_enter(
              fb_assets: Res<FlappyBirdAssets>| {
                 audio.play(fb_assets.sfx_swooshing.clone());
                 if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
-                    transform.translation.z = 999.;
+                    transform.translation.z = MASK_CENTER_FORE_Z_INDEX;
                     let transition_tween = Tween::new(
                         EaseFunction::QuarticInOut,
                         Duration::from_millis(500),
@@ -124,10 +116,7 @@ pub fn main_enter(
         ),
         SpriteBundle {
             texture: fb_assets.button_play_normal.clone(),
-            transform: Transform {
-                translation: Vec3::new(0., -40., Z_INDEX_1),
-                ..default()
-            },
+            transform: Transform::from_xyz(0., -40., Z_INDEX_1),
             ..default()
         },
     );
@@ -137,10 +126,7 @@ pub fn main_enter(
         Ground,
         SpriteBundle {
             texture: fb_assets.ground.clone(),
-            transform: Transform {
-                translation: Vec3::new(12., -100., Z_INDEX_1),
-                ..default()
-            },
+            transform: Transform::from_xyz(12., -100., Z_INDEX_1),
             ..default()
         },
     );
@@ -163,11 +149,5 @@ pub fn exit(mut commands: Commands, q_main_menu: Query<Entity, With<InMainMenu>>
         if let Some(ec) = commands.get_entity(entity) {
             ec.despawn_recursive();
         }
-    }
-}
-
-pub fn title_animation(time: Res<Time>, mut q_title: Query<&mut Transform, With<Title>>) {
-    if let Ok(mut transform) = q_title.get_single_mut() {
-        transform.translation.y = 60. + (time.elapsed_seconds() * 2.).sin() * 2.;
     }
 }

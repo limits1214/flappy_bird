@@ -51,14 +51,10 @@ pub fn game_enter(
         Collider::circle(17. / 2.),
         ColliderDensity(0.0),
         Mass(5.0),
-        // LinearDamping(0.0),
-        // ColliderDensity(2.5),
-        // Mass(5.0),
-        // GravityScale(100.),
         SpriteBundle {
             texture: fb_assets.gen_bird_atlas_texture.clone(),
             transform: Transform {
-                translation: Vec3::new(-30., 30., Z_INDEX_1),
+                translation: Vec3::new(-30., 30., Z_INDEX_2),
                 ..default()
             },
             ..default()
@@ -75,7 +71,7 @@ pub fn game_enter(
     let pause_btn = (
         Name::new("pause"),
         SpatialBundle::from_transform(Transform {
-            translation: Vec3::new(-55., 110., Z_INDEX_10),
+            translation: Vec3::new(-55., 110., Z_INDEX_2),
             ..default()
         }),
         On::<Pointer<Click>>::run(
@@ -137,10 +133,6 @@ pub fn game_enter(
         Name::new("pause sprite"),
         SpriteBundle {
             texture: fb_assets.button_pause.clone(),
-            transform: Transform {
-                translation: Vec3::new(0., 0., 0.),
-                ..default()
-            },
             ..default()
         },
     );
@@ -149,10 +141,7 @@ pub fn game_enter(
         Name::new("get_ready"),
         SpriteBundle {
             texture: fb_assets.label_get_ready.clone(),
-            transform: Transform {
-                translation: Vec3::new(0., 60., Z_INDEX_1),
-                ..default()
-            },
+            transform: Transform::from_xyz(0., 60., Z_INDEX_1),
             ..default()
         },
     );
@@ -160,10 +149,7 @@ pub fn game_enter(
     let score = (
         Name::new("score"),
         ScoreParent,
-        SpatialBundle::from_transform(Transform {
-            translation: Vec3::new(0., 110., Z_INDEX_1),
-            ..default()
-        }),
+        SpatialBundle::from_transform(Transform::from_xyz(0., 110., Z_INDEX_2)),
     );
 
     let num_0 = (
@@ -184,7 +170,7 @@ pub fn game_enter(
         SpriteBundle {
             texture: fb_assets.ground.clone(),
             transform: Transform {
-                translation: Vec3::new(12., -100., Z_INDEX_1),
+                translation: Vec3::new(12., -100., Z_INDEX_2),
                 ..default()
             },
             ..default()
@@ -275,7 +261,7 @@ pub fn game_enter(
         PipeParent,
         SpatialBundle {
             transform: Transform {
-                translation: Vec3::new(85., r, 120.),
+                translation: Vec3::new(85., r, Z_INDEX_1),
                 ..default()
             },
             ..default()
@@ -287,7 +273,7 @@ pub fn game_enter(
         PipeParent,
         SpatialBundle {
             transform: Transform {
-                translation: Vec3::new(170., r2, 120.),
+                translation: Vec3::new(170., r2, Z_INDEX_1),
                 ..default()
             },
             ..default()

@@ -1,4 +1,4 @@
-use avian2d::prelude::{Gravity, GravityScale, Mass};
+use avian2d::prelude::Gravity;
 use bevy::{prelude::*, window::WindowResized};
 
 use crate::{
