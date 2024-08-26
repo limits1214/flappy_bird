@@ -7,7 +7,7 @@ use bevy_tweening::lens::TransformRotationLens;
 use bevy_tweening::{Animator, Delay, EaseFunction, Tween};
 use crate::components::game::{Bird, Guide};
 use crate::events::game::JumpEvent;
-use crate::states::{Game, States};
+use crate::states::{Game, MyStates};
 use crate::{constant::PAUSE_BTN_DEPTH, resources::resize_scale::ResizeScale};
 
 pub fn touch(
@@ -16,7 +16,7 @@ pub fn touch(
     q_guide: Query<Entity, With<Guide>>,
     q_bird: Query<Entity, With<Bird>>,
     resize_scale: Res<ResizeScale>,
-    mut next_state: ResMut<NextState<States>>,
+    mut next_state: ResMut<NextState<MyStates>>,
 ) {
     for JumpEvent(_, a) in read.read() {
         if *a == PAUSE_BTN_DEPTH {
@@ -35,7 +35,7 @@ pub fn touch(
                     ec.insert(RigidBody::Dynamic);
                 }
             }
-            next_state.set(States::Game(Game::Game));
+            next_state.set(MyStates::Game(Game::Game));
         }
 
         

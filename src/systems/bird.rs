@@ -1,7 +1,7 @@
-use avian2d::prelude::{Collider, CollidingEntities};
 use bevy::prelude::*;
-
-use crate::{components::{game::{Bird, GroundCollider, Pipe, PipePoint, PointEarned}, timer::BirdAnimateTimer}, events::game::{ResultEvent, ScoreUpEvent}, states::{Game, States}};
+use avian2d::prelude::*;
+use crate::components::prelude::*;
+use crate::events::prelude::*;
 
 pub fn bird_animation(
     atlases: ResMut<Assets<TextureAtlasLayout>>,

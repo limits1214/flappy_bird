@@ -1,32 +1,18 @@
-use std::time::Duration;
-use bevy_mod_picking::prelude::*;
-use bevy::color::palettes::css::{BLACK, WHITE};
-use bevy::prelude::*;
-use bevy_tweening::lens::{SpriteColorLens, TransformPositionLens};
-use bevy_tweening::{Animator, Delay, EaseFunction, Tween, TweenCompleted};
 
-use crate::components::game::{BestScore, Bg, NowScore, PanelParent, Sparkle};
-use crate::components::mask::MaskCenter;
-use crate::components::states::InResult;
-use crate::components::timer::{ScoreCountingAniTimer, SparkleAniTimer};
-use crate::ffi::{Ffi, FfiKv, Score};
-use crate::my_extensions::{ColorExtension, SpriteExtension};
-use crate::resources::assets::FlappyBirdAssets;
-use crate::resources::game::GameConfig;
-use crate::states::{Game, States};
-use crate::constant::{BRONZE_MEDAL_CUT, GOLD_MEDAL_CUT, PLATINUM_MEDAL_CUT, SILVER_MEDAL_CUT, TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, TWEEN_PANEL_UP_END, TWEEN_RESULT_TO_MENU, TWEEN_SPARKLE_START};
 
-use super::score::get_score_entitiy_vec;
 
+
+
+use crate::prelude::*;
 
 
 pub fn tween_callback_menu_to_game(
     mut reader: EventReader<TweenCompleted>,
-    mut next_state: ResMut<NextState<States>>,
+    mut next_state: ResMut<NextState<MyStates>>,
 ) {
     for event in reader.read() {
         if event.user_data == TWEEN_MENU_TO_GAME {
-            next_state.set(States::Game(Game::Init));
+            next_state.set(MyStates::Game(Game::Init));
             
         }
     }
@@ -279,11 +265,11 @@ pub fn tween_callback_death_white(
 
 pub fn tween_callback_result_to_menu(
     mut reader: EventReader<TweenCompleted>,
-    mut next_state: ResMut<NextState<States>>,
+    mut next_state: ResMut<NextState<MyStates>>,
 ) {
     for event in reader.read() {
         if event.user_data == TWEEN_RESULT_TO_MENU {
-            next_state.set(States::MainMenu);
+            next_state.set(MyStates::MainMenu);
         }
     }
 }

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-
-use crate::{resources::assets::FlappyBirdAssets, states::States};
+use crate::resources::prelude::*;
+use crate::states::prelude::*;
 
 pub fn loading_ui() {
     info!("loading_ui");
@@ -8,7 +8,7 @@ pub fn loading_ui() {
 
 pub fn assets_gen(
     mut fb_assets: ResMut<FlappyBirdAssets>,
-    mut next_state: ResMut<NextState<States>>,
+    mut next_state: ResMut<NextState<MyStates>>,
     mut textures: ResMut<Assets<Image>>,
     mut atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
@@ -35,5 +35,5 @@ pub fn assets_gen(
     fb_assets.gen_sparkle_atlas_layout = atlases.add(layout);
     fb_assets.gen_sparkle_atlas_texture = textures.add(texture);
 
-    next_state.set(States::MainMenu);
+    next_state.set(MyStates::MainMenu);
 }

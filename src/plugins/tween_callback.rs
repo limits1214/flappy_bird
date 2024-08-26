@@ -1,8 +1,6 @@
 use bevy::prelude::*;
 use bevy_tweening::TweenCompleted;
-
-use crate::systems::tween_callback::{tween_callback_death_white, tween_callback_mask_center_back, tween_callback_menu_to_game, tween_callback_panel_up, tween_callback_result_to_menu, tween_callback_spakle_start};
-
+use crate::systems::prelude::*;
 
 pub struct TweenCallbackPlugin;
 

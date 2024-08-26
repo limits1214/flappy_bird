@@ -5,10 +5,10 @@ use bevy::{color::palettes::css::{BLACK, BLUE, RED, WHITE}, prelude::*};
 use bevy_kira_audio::prelude::*;
 use bevy_mod_picking::{events::Click, prelude::On};
 use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween, TweenCompleted};
-use crate::{components::{ game::{BirdBundle, Ground}, main_menu::{PlayBtn, Title}, mask::{Mask, MaskCenter, MaskSide}, resize::Resizable, states::InMainMenu}, constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1}, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, States}};
+use crate::{components::{ game::{BirdBundle, Ground}, main_menu::{PlayBtn, Title}, mask::{Mask, MaskCenter, MaskSide}, resize::Resizable, states::InMainMenu}, constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1}, events::resize::ResizeEvent, resources::assets::FlappyBirdAssets, states::{Game, MyStates}};
 use bevy_mod_picking::prelude::*;
 
-pub fn enter(
+pub fn main_enter(
     mut commands: Commands,
     fb_assets: Res<FlappyBirdAssets>,
     mut ew_resize: EventWriter<ResizeEvent>,

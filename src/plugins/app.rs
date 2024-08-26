@@ -1,10 +1,10 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, transform::commands};
 use bevy_framepace::{FramepaceSettings, Limiter};
 use bevy_kira_audio::AudioPlugin;
 use bevy_mod_picking::DefaultPickingPlugins;
 use avian2d::prelude::*;
 use bevy_tweening::TweeningPlugin;
-use crate::{constant::TARGET_FRAME_RATE, states::{Assets, States}};
+use crate::{constant::TARGET_FRAME_RATE, states::{Assets, MyStates}};
 
 use super::{assets::AssetPlugin, game::GamePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin, resize::ResizePlugin, tween_callback::TweenCallbackPlugin};
 
@@ -36,10 +36,9 @@ impl Plugin for AppPlugin {
             .add_plugins(GamePlugin);
 
         // 2d 카메라 생성
-        app
-            .world_mut()
-            .commands()
-            .spawn(Camera2dBundle::default());
+        app.add_systems(Startup, |mut commands: Commands| {
+            commands.spawn(Camera2dBundle::default());
+        });
 
         #[cfg(feature="inspector")]
         {

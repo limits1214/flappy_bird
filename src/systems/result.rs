@@ -1,18 +1,18 @@
 use std::time::Duration;
-use crate::{components::{game::{BestScore, NowScore, Sparkle, }, timer::{ScoreCountingAniTimer, SparkleAniTimer}}, constant::{BRONZE_MEDAL_CUT, GOLD_MEDAL_CUT, PLATINUM_MEDAL_CUT, SILVER_MEDAL_CUT, TWEEN_SPARKLE_START}, events::game::ResultEvent, my_extensions::*};
+use crate::{components::{game::{BestScore, NowScore, Sparkle, }, timer::{ScoreCountingAniTimer, SparkleAniTimer}}, constant::{BRONZE_MEDAL_CUT, GOLD_MEDAL_CUT, PLATINUM_MEDAL_CUT, SILVER_MEDAL_CUT, TWEEN_SPARKLE_START}, events::game::ResultEvent, my_extensions::*, states::MyStates};
 use bevy::{color::palettes::css::{BLACK, WHITE}, prelude::*};
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{lens::{SpriteColorLens, TransformPositionLens}, Animator, BoxedTweenable, Delay, EaseFunction, Tracks, Tween, TweenCompleted, Tweenable};
 use rand::Rng;
 
-use crate::{components::{mask::MaskCenter}, constant::{TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_PANEL_UP_END, TWEEN_RESULT_TO_MENU}, ffi::{Ffi, FfiKv, Score}, resources::{assets::FlappyBirdAssets, game::GameConfig,  }, states::{Game, States}};
+use crate::{components::{mask::MaskCenter}, constant::{TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_PANEL_UP_END, TWEEN_RESULT_TO_MENU}, ffi::{Ffi, FfiKv, Score}, resources::{assets::FlappyBirdAssets, game::GameConfig,  }, states::{Game}};
 
 use super::score::{get_score_entitiy_vec, scoring_helper2, ScoreingHelperArgs};
 
 pub fn on_result(
     mut commands: Commands,
     mut reader: EventReader<ResultEvent>,
-    mut next_state: ResMut<NextState<States>>,
+    mut next_state: ResMut<NextState<MyStates>>,
     mut q_mask_center: Query<(Entity, &mut Transform), With<MaskCenter>>,
 ) {
     for _ in reader.read() {
@@ -41,7 +41,7 @@ pub fn on_result(
             let seq = tween.then(tween2);
 
             commands.entity(entity).insert(Animator::new(seq));
-            next_state.set(States::Game(Game::Result));
+            next_state.set(MyStates::Game(Game::Result));
         }
     }
 }
