@@ -1,17 +1,18 @@
 use std::time::Duration;
-
+use crate::{constant::TWEEN_SPARKLE_START, my_extensions::*};
 use bevy::{color::palettes::css::{BLACK, WHITE}, prelude::*};
+use bevy_inspector_egui::egui::load;
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{lens::{SpriteColorLens, TransformPositionLens}, Animator, BoxedTweenable, Delay, EaseFunction, Tracks, Tween, TweenCompleted, Tweenable};
 use rand::Rng;
 
-use crate::{components::{mask::MaskCenter, result::InResult, sparkle::{Sparkle, SparkleAniTimer}, Bg}, constant::{TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_RESULT_TO_MENU}, events::result::ResultEvent, ffi::{Ffi, FfiKv, Score}, resources::{assets::FlappyBirdAssets, config::GameConfig,  }, states::{Game, States}};
+use crate::{components::{mask::MaskCenter, result::{InResult, PanelParent, ScoreCountingAniTimer}, score::{BestScore, NowScore, ScoreParent}, sparkle::{Sparkle, SparkleAniTimer}, Bg}, constant::{TWEEN_DEATH_WHITE, TWEEN_MASK_CENTER_BACK, TWEEN_PANEL_UP_END, TWEEN_RESULT_TO_MENU}, events::result::ResultEvent, ffi::{Ffi, FfiKv, Score}, resources::{assets::FlappyBirdAssets, config::GameConfig,  }, states::{Game, States}};
+
+use super::score::{get_score_entitiy_vec, scoring_helper2, ScoreingHelperArgs};
 
 pub fn on_result(
     mut commands: Commands,
     mut reader: EventReader<ResultEvent>,
-    q_bg: Query<Entity, With<Bg>>,
-    fb_assets: Res<FlappyBirdAssets>,
     mut next_state: ResMut<NextState<States>>,
     mut q_mask_center: Query<(Entity, &mut Transform), With<MaskCenter>>,
 ) {
@@ -43,168 +44,23 @@ pub fn on_result(
             commands.entity(entity).insert(Animator::new(seq));
             next_state.set(States::Game(Game::Result));
         }
-
-
-        // if let Ok(bg) = q_bg.get_single() {
-        //     if let Some(mut ec) = commands.get_entity(bg) {
-
-        //         let gameover = (
-        //             Name::new("gameover"),
-        //             InResult,
-        //             SpriteBundle {
-        //                 texture: fb_assets.label_game_over.clone(),
-        //                 transform: Transform {
-        //                     translation: Vec3::new(0., 50., 10.),
-        //                     ..default()
-        //                 },
-        //                 ..default()
-        //             }
-        //         );
-
-        //         let panel_parent = (
-        //             Name::new("result parent"),
-        //             InResult,
-        //             SpatialBundle::default()
-        //         );
-
-        //         let panel = (
-        //             Name::new("panel"),
-        //             SpriteBundle {
-        //                 texture: fb_assets.panel_score.clone(),
-        //                 transform: Transform {
-        //                     translation: Vec3::new(0., 0., 10.),
-        //                     ..default()
-        //                 },
-        //                 ..default()
-        //             }
-        //         );
-
-        //         let ok = (
-        //             Name::new("ok"),
-        //             InResult,
-        //             SpriteBundle {
-        //                 texture: fb_assets.button_ok.clone(),
-        //                 transform: Transform {
-        //                     translation: Vec3::new(0., -60., 10.),
-        //                     ..default()
-        //                 },
-        //                 ..default()
-        //             },
-        //             On::<Pointer<Click>>::run(|mut next_state: ResMut<NextState<States>>| {
-        //                 next_state.set(States::MainMenu);
-        //             }),
-        //         );
-
-        //         let medal_parent = (
-        //             Name::new("medal_parent"),
-        //             SpatialBundle::from_transform(Transform{
-        //                 translation: Vec3::new(-32., -4., 999.),
-        //                 ..default()
-        //             })
-        //         );
-
-        //         let medal = (
-        //             Name::new("medal bronze"),
-        //             SpriteBundle {
-        //                 texture: fb_assets.medal_bronze.clone(),
-        //                 ..default()
-        //             }
-        //         );
-
-        //         let score_parent= (
-        //             Name::new("score_parent"),
-        //             SpatialBundle::from_transform(Transform{
-        //                 translation: Vec3::new(37., 7., 999.),
-        //                 ..default()
-        //             })
-        //         );
-
-        //         let score = (
-
-        //         );
-
-        //         let best_parent = (
-        //             Name::new("best_parent"),
-        //             SpatialBundle::from_transform(Transform{
-        //                 translation: Vec3::new(37., -14., 999.),
-        //                 ..default()
-        //             })
-        //         );
-
-        //         next_state.set(States::Game(Game::Result));
-        //         ec.with_children(|parent| {
-        //             parent.spawn(gameover);
-        //             parent.spawn(
-        //                 panel_parent
-        //             )
-        //             .with_children(|parent| {
-        //                 parent.spawn(panel);
-        //                 parent.spawn(medal_parent)
-        //                     .with_children(|parent| {
-        //                         parent.spawn(medal);
-        //                     });
-        //                 parent.spawn(score_parent)
-        //                     .with_children(|parent| {
-        //                         parent.spawn(
-        //                             (
-        //                                 SpriteBundle {
-        //                                     texture: fb_assets.number_middle_1.clone(),
-        //                                     ..default()
-        //                                 }
-        //                             )
-        //                         );
-        //                         parent.spawn(
-        //                             (
-        //                                 SpriteBundle {
-        //                                     texture: fb_assets.number_middle_1.clone(),
-        //                                     ..default()
-        //                                 }
-        //                             )
-        //                         );
-        //                     });
-        //                 parent.spawn(best_parent)
-        //                     .with_children(|parent| {
-        //                         parent.spawn(
-        //                             (
-        //                                 SpriteBundle {
-        //                                     texture: fb_assets.number_middle_1.clone(),
-        //                                     ..default()
-        //                                 }
-        //                             )
-        //                         );
-        //                         parent.spawn(
-        //                             (
-        //                                 SpriteBundle {
-        //                                     texture: fb_assets.number_middle_1.clone(),
-        //                                     ..default()
-        //                                 }
-        //                             )
-        //                         );
-        //                     });
-        //             });
-
-        //             parent.spawn(ok);
-        //         });
-        //     }
-        // }
     }
 }
 
 pub fn tween_callback_death_white(
     mut commands: Commands,
     mut reader: EventReader<TweenCompleted>,
-    mut q_mask: Query<&mut Transform, With<MaskCenter>>,
-    q_bg: Query<Entity, With<Bg>>,
+    mut q_mask: Query<&mut Transform, (With<MaskCenter>, Without<BestScore>)>,
     fb_assets: Res<FlappyBirdAssets>,
+    q_bg: Query<Entity, With<Bg>>,
     mut config: ResMut<GameConfig>,
 ) {
     for event in reader.read() {
         if event.user_data == TWEEN_DEATH_WHITE {
+            
             if let Ok(mut transform) = q_mask.get_single_mut() {
                 transform.translation.z = -1.;
             }
-
-            
 
             let loaded_score_str = Ffi::get("score");
             let mut loaded_best_score = match serde_json::from_str::<Score>(&loaded_score_str) {
@@ -216,20 +72,11 @@ pub fn tween_callback_death_white(
                 }
             };
 
-            let now_score = config.score;
-
-            let is_new = if now_score > loaded_best_score {
-                loaded_best_score = now_score;
-                let score = Score {
-                    score: now_score
-                };
-                let score_string = serde_json::to_string(&score).unwrap_or(String::new());
-                Ffi::set("score", &score_string);
-                true
-            } else {
-                false
-            };
-
+            let result_parent = (
+                Name::new("result parent"),
+                InResult,
+                SpatialBundle::default(),
+            );
 
             let tween_gameover1 = Tween::new(
                 EaseFunction::QuarticInOut, 
@@ -260,8 +107,6 @@ pub fn tween_callback_death_white(
                 }
             );
 
-
-
             let gameover_parent = (
                 Name::new("gameover parent"),
                 
@@ -285,7 +130,6 @@ pub fn tween_callback_death_white(
             );
 
 
-
             let panel_tween_delay = Delay::new(Duration::from_millis(500));
             let panel_tween = Tween::new(
                 EaseFunction::QuadraticInOut, 
@@ -294,18 +138,19 @@ pub fn tween_callback_death_white(
                     start: Vec3::new(0., -300., 222.),
                     end:  Vec3::new(-0., 0., 222.),
                 }
-            );
+            ).with_completed_event(TWEEN_PANEL_UP_END);
             let seq = panel_tween_delay.then(panel_tween);
-
             let panel_parent = (
                 Name::new("panel parent"),
-                
+                PanelParent,
                 SpatialBundle::from_transform(Transform{
                     translation: Vec3::new(0., -300., 222.),
                     ..default()
                 }),
                 Animator::new(seq),
             );
+
+            
 
             let panel = (
                 Name::new("panel"),
@@ -319,7 +164,305 @@ pub fn tween_callback_death_white(
                 }
             );
 
-            let delay_ok = Delay::new(Duration::from_millis(1500));
+            let now_score_parent= (
+                Name::new("now_score_parent"),
+                NowScore(0),
+                SpatialBundle::from_transform(Transform{
+                    translation: Vec3::new(37., 7., 222.),
+                    ..default()
+                })
+            );
+
+            let now_score_0 = (
+                Name::new("num"),
+                SpriteBundle {
+                    texture: fb_assets.number_middle_0.clone(),
+                    transform: Transform {
+                        translation: Vec3::new(0., 0., 0.),
+                        ..default()
+                    },
+                    ..default()
+                }
+            );
+
+
+            let score_str = loaded_best_score.to_string();
+            let mut x_offset = 0.;
+            let vstr_best = get_score_entitiy_vec(&mut commands, &fb_assets, false, 8., loaded_best_score, &mut x_offset);
+            // let offset = 8.;
+            // let vstr_best = score_str
+            //     .split("")
+            //     .filter(|&f| f != "")
+            //     .map(|str| {
+            //         let e = commands.spawn(
+            //             (
+            //                 Name::new("num"),
+            //                 SpriteBundle {
+            //                     texture: fb_assets.get_middle_num(str),
+            //                     transform: Transform {
+            //                         translation: Vec3::new(x_offset, 0., 0.),
+            //                         ..default()
+            //                     },
+            //                     ..default()
+            //                 }
+            //             )
+            //         ).id();
+            //         x_offset += offset;
+            //         return e;
+            //     })
+            //     .collect::<Vec<_>>();
+            let adjust_x = -1. * (x_offset - 8.) / 2.;
+            let best_score_parent = (
+                Name::new("best_score_parent"),
+                BestScore(loaded_best_score),
+                SpatialBundle::from_transform(Transform{
+                    translation: Vec3::new(37. + adjust_x, -14., 222.),
+                    ..default()
+                })
+            );
+            let entity = q_bg.single();
+            commands.entity(entity)
+                .with_children(|parent| {
+                    parent.spawn(result_parent)
+                        .with_children(|parent| {
+                            parent.spawn(gameover_parent)
+                            .with_children(|parent| {
+                                parent.spawn(gameover);
+                            });
+                            parent.spawn(panel_parent)
+                                .with_children(|parent| {
+                                    parent.spawn(panel)
+                                        .with_children(|parent| {
+                                            parent.spawn(now_score_parent)
+                                                .with_children(|parent| {
+                                                    parent.spawn(now_score_0);
+                                                });
+                                            parent.spawn(best_score_parent)
+                                                .push_children(vstr_best.as_slice());
+                                                ;
+                                        });
+                                    
+                                    // if is_new {
+                                    //     parent.spawn(new);
+                                    // }
+                                    // if now_score >= 1 {
+                                    //     parent.spawn(medal_parent)
+                                    //     .with_children(|parent| {
+                                    //         parent.spawn(medal);
+                                    //         parent.spawn(sparkle);
+                                    //     });
+                                    // }
+                                });
+                            // parent.spawn(ok);
+                        });
+                });
+
+        }
+    }
+}
+
+pub fn tween_callback_result_to_menu(
+    mut reader: EventReader<TweenCompleted>,
+    mut next_state: ResMut<NextState<States>>,
+) {
+    for event in reader.read() {
+        if event.user_data == TWEEN_RESULT_TO_MENU {
+            next_state.set(States::MainMenu);
+        }
+    }
+}
+
+pub fn tween_callback_mask_center_back(
+    mut reader: EventReader<TweenCompleted>,
+    mut q_mask: Query<&mut Transform, With<MaskCenter>>
+) {
+    for event in reader.read() {
+        if event.user_data == TWEEN_MASK_CENTER_BACK {
+            if let Ok(mut transform) = q_mask.get_single_mut() {
+                transform.translation.z = -1.;
+            }
+        }
+    }
+}
+
+pub fn spakle_animation(
+    atlases: ResMut<Assets<TextureAtlasLayout>>,
+    time: Res<Time>,
+    mut q_ani: Query<(&mut TextureAtlas, &mut SparkleAniTimer, &mut Transform), With<Sparkle>>
+) {
+    for (mut at, mut ti, mut transform) in &mut q_ani {
+        ti.0.tick(time.delta());
+        if ti.0.just_finished() {
+            let a = &at.layout;
+            let a = atlases.get(a.id()).unwrap();
+            
+            at.index = (at.index + 1) % a.textures.len();
+            if at.index == 0 {
+                let rx = rand::thread_rng().gen_range(-8.0..8.0);
+                let ry = rand::thread_rng().gen_range(-8.0..8.0);
+                transform.translation.x = rx;
+                transform.translation.y = ry;
+            }
+        }
+    }
+}
+
+pub fn score_couting_ani(
+    mut commands: Commands,
+    fb_assets: Res<FlappyBirdAssets>,
+    time: Res<Time>,
+    mut q_ani: Query<(Entity, &mut ScoreCountingAniTimer), With<ScoreCountingAniTimer>>,
+    config: Res<GameConfig>,
+    mut q_now_score: Query<(Entity, &mut NowScore, &Children, &Transform), With<NowScore>>,
+    mut q_best_score: Query<(Entity, &mut BestScore, &Children, &Transform), With<BestScore>>,
+    q_test: Query<(Entity, &Transform, &Children), With<NowScore>>,
+) {
+    for (timer_entity, mut timer) in &mut q_ani {
+        timer.0.tick(time.delta());
+        if timer.0.just_finished() {
+
+            
+            let (entity, mut nowscore, children, transform) = q_now_score.single_mut();
+
+            for &entity in children {
+                if let Some(ec) = commands.get_entity(entity) {
+                    ec.despawn_recursive();
+                }
+            }
+
+            let score_str = nowscore.0.to_string();
+            let mut x_offset = 0.;
+            let offset = 8.;
+            let vstr_now = score_str
+                .split("")
+                .filter(|&f| f != "")
+                .map(|str| {
+                    let e = commands.spawn(
+                        (
+                            Name::new("num?"),
+                            SpriteBundle {
+                                texture: fb_assets.get_middle_num(str),
+                                transform: Transform {
+                                    translation: Vec3::new(x_offset, 0., 0.),
+                                    ..default()
+                                },
+                                ..default()
+                            }
+                        )
+                    ).id();
+                    x_offset += offset;
+                    return e;
+                })
+                .collect::<Vec<_>>();
+
+            let adjust_x = -1. * (x_offset - 8.) / 2.;
+            let tr = transform.translation;
+            commands.entity(entity).insert(Transform {
+                translation: Vec3::new(37. + adjust_x, tr.y, tr.z),
+                ..default()
+            });
+            commands.entity(entity).push_children(vstr_now.as_slice());
+            if nowscore.0 >= config.score {
+                commands.entity(timer_entity).remove::<ScoreCountingAniTimer>();
+            }
+            
+
+            nowscore.0 += 1;
+
+            let (entity, mut best_score, children, transform) = q_best_score.single_mut();
+
+            if nowscore.0 > best_score.0 {
+                for &entity in children {
+                    if let Some(ec) = commands.get_entity(entity) {
+                        ec.despawn_recursive();
+                    }
+                }
+    
+                let score_str = best_score.0.to_string();
+                let mut x_offset = 0.;
+                let offset = 8.;
+                let vstr_now = score_str
+                    .split("")
+                    .filter(|&f| f != "")
+                    .map(|str| {
+                        let e = commands.spawn(
+                            (
+                                Name::new("num?"),
+                                SpriteBundle {
+                                    texture: fb_assets.get_middle_num(str),
+                                    transform: Transform {
+                                        translation: Vec3::new(x_offset, 0., 0.),
+                                        ..default()
+                                    },
+                                    ..default()
+                                }
+                            )
+                        ).id();
+                        x_offset += offset;
+                        return e;
+                    })
+                    .collect::<Vec<_>>();
+    
+                let adjust_x = -1. * (x_offset - 8.) / 2.;
+
+                let tr = transform.translation;
+                commands.entity(entity).insert(Transform {
+                    translation: Vec3::new(37. + adjust_x, tr.y, tr.z),
+                    ..default()
+                });
+                commands.entity(entity).push_children(vstr_now.as_slice());
+                // if best_score.0 >= config.score {
+                //     commands.entity(timer_entity).remove::<ScoreCountingAniTimer>();
+                // }
+    
+                best_score.0 += 1;
+            }
+        }
+    }
+}
+
+pub fn tween_callback_panel_up(
+    mut commands: Commands,
+    mut reader: EventReader<TweenCompleted>,
+    fb_assets: Res<FlappyBirdAssets>,
+    mut config: ResMut<GameConfig>,
+    mut q_panel_parent: Query<Entity, With<PanelParent>>,
+    mut q_now_score: Query<Entity, With<NowScore>>,
+    mut q_best_score: Query<Entity, With<BestScore>>,
+) {
+    for event in reader.read() {
+        if event.user_data == TWEEN_PANEL_UP_END {
+            let loaded_score_str = Ffi::get("score");
+            let mut loaded_best_score = match serde_json::from_str::<Score>(&loaded_score_str) {
+                Ok(s) => {
+                    s.score
+                },
+                Err(_) => {
+                    0
+                }
+            };
+
+            let now_score = config.score;
+
+            let is_new = if now_score > loaded_best_score {
+                loaded_best_score = now_score;
+                let score = Score {
+                    score: now_score
+                };
+                let score_string = serde_json::to_string(&score).unwrap_or(String::new());
+                Ffi::set("score", &score_string);
+                true
+            } else {
+                false
+            };
+
+            let target_mill = 1000;
+            let tick_mill = target_mill / (now_score + 1) as u64;
+
+
+            
+
+            let delay_ok = Delay::new(Duration::from_millis(1000));
 
             let tween_ok = Tween::new(
                 EaseFunction::QuadraticInOut, 
@@ -330,7 +473,7 @@ pub fn tween_callback_death_white(
                 }
             );
 
-            let seq = delay_ok.then(tween_ok);
+            let ok_seq = delay_ok.then(tween_ok);
 
             let ok = (
                 Name::new("ok"),
@@ -380,7 +523,7 @@ pub fn tween_callback_death_white(
                         commands.entity(entity).insert(Animator::new(seq));
                     }
                 }),
-                Animator::new(seq),
+                Animator::new(ok_seq),
             );
 
             let medal_parent = (
@@ -391,30 +534,47 @@ pub fn tween_callback_death_white(
                 }),
             );
 
+            let medal_delay = Delay::new(Duration::from_millis(1000));
+            let tween_medal = Tween::new(
+                EaseFunction::QuadraticInOut, 
+                Duration::from_millis(100), 
+                SpriteColorLens {
+                    start: Color::new_alpha_0(),
+                    end: WHITE.into(),
+                }
+            );
+            let medal_seq = medal_delay.then(tween_medal);
+
             let medal = (
                 Name::new("medal"),
+                Animator::new(medal_seq),
                 if now_score >= 4 {
                     SpriteBundle {
+                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_platinum.clone(),
                         ..default()
                     }
                 } else if now_score >= 3 {
                     SpriteBundle {
+                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_gold.clone(),
                         ..default()
                     }
                 } else if now_score >= 2 {
                     SpriteBundle {
+                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_silver.clone(),
                         ..default()
                     }
                 } else if now_score >= 1 {
                     SpriteBundle {
+                        sprite: Sprite::alpah_0_sprite(),
                         texture: fb_assets.medal_bronze.clone(),
                         ..default()
                     }
                 } else {
                     SpriteBundle {
+                        sprite: Sprite::alpah_0_sprite(),
                         transform: Transform {
                             translation: Vec3::new(0., 0., -999.),
                             ..default()
@@ -424,82 +584,50 @@ pub fn tween_callback_death_white(
                 }
             );
 
-            let score_parent= (
-                Name::new("score_parent"),
-                SpatialBundle::from_transform(Transform{
-                    translation: Vec3::new(37., 7., 222.),
-                    ..default()
-                })
+            
+
+            // let score_str = now_score.to_string();
+            // let mut x_offset = 0.;
+            // let offset = 13.;
+            // let vstr_now = score_str
+            //     .split("")
+            //     .filter(|&f| f != "")
+            //     .map(|str| {
+            //         let e = commands.spawn(
+            //             (
+            //                 Name::new("num"),
+            //                 SpriteBundle {
+            //                     texture: fb_assets.get_middle_num(str),
+            //                     transform: Transform {
+            //                         translation: Vec3::new(x_offset, 0., 0.),
+            //                         ..default()
+            //                     },
+            //                     ..default()
+            //                 }
+            //             )
+            //         ).id();
+            //         x_offset += offset;
+            //         return e;
+            //     })
+            //     .collect::<Vec<_>>();
+
+
+            let new_delay = Delay::new(Duration::from_millis(1000));
+            let tween_new = Tween::new(
+                EaseFunction::QuadraticInOut, 
+                Duration::from_millis(100), 
+                SpriteColorLens {
+                    start: Color::new_alpha_0(),
+                    end: WHITE.into(),
+                }
             );
-
-            let score_str = now_score.to_string();
-            let mut x_offset = 0.;
-            let offset = 13.;
-            let vstr_now = score_str
-                .split("")
-                .filter(|&f| f != "")
-                .map(|str| {
-                    let e = commands.spawn(
-                        (
-                            Name::new("num"),
-                            SpriteBundle {
-                                texture: fb_assets.get_middle_num(str),
-                                transform: Transform {
-                                    translation: Vec3::new(x_offset, 0., 0.),
-                                    ..default()
-                                },
-                                ..default()
-                            }
-                        )
-                    ).id();
-                    x_offset += offset;
-                    return e;
-                })
-                .collect::<Vec<_>>();
-
-
-            let best_parent = (
-                Name::new("best_parent"),
-                SpatialBundle::from_transform(Transform{
-                    translation: Vec3::new(37., -14., 222.),
-                    ..default()
-                })
-            );
-
-            let score_str = loaded_best_score.to_string();
-            let mut x_offset = 0.;
-            let offset = 13.;
-            let vstr_best = score_str
-                .split("")
-                .filter(|&f| f != "")
-                .map(|str| {
-                    let e = commands.spawn(
-                        (
-                            Name::new("num"),
-                            SpriteBundle {
-                                texture: fb_assets.get_middle_num(str),
-                                transform: Transform {
-                                    translation: Vec3::new(x_offset, 0., 0.),
-                                    ..default()
-                                },
-                                ..default()
-                            }
-                        )
-                    ).id();
-                    x_offset += offset;
-                    return e;
-                })
-                .collect::<Vec<_>>();
-
-            let result_parent = (
-                Name::new("result parent"),
-                InResult,
-                SpatialBundle::default(),
-            );
+            let new_seq = new_delay.then(tween_new);
 
             let new = (
                 Name::new("new"),
+                Animator::new(new_seq),
                 SpriteBundle {
+                    sprite: Sprite::alpah_0_sprite(),
                     texture: fb_assets.label_new.clone(),
                     transform: Transform {
                         translation: Vec3::new(19., -4., 10.),
@@ -509,96 +637,68 @@ pub fn tween_callback_death_white(
                 }
             );
 
+            let sparkle_delay = Delay::new(Duration::from_millis(1001));
+            let tween_sparkle = Tween::new(
+                EaseFunction::QuadraticInOut, 
+                Duration::from_millis(100), 
+                SpriteColorLens {
+                    start: Color::new_alpha_0(),
+                    end: WHITE.into(),
+                }
+            ).with_completed_event(TWEEN_SPARKLE_START);
+            let sparkle_seq = sparkle_delay.then(tween_sparkle);
+
             let sparkle = (
                 Name::new("spakle"),
                 Sparkle,
-                SparkleAniTimer(Timer::new(Duration::from_millis(150), TimerMode::Repeating)),
                 SpriteBundle {
+                    sprite: Sprite::alpah_0_sprite(),
                     texture: fb_assets.gen_sparkle_atlas_texture.clone(),
+                    transform: Transform::from_xyz(0., 0., 222.),
                     ..default()
                 },
                 TextureAtlas {
                     index: 0,
                     layout: fb_assets.gen_sparkle_atlas_layout.clone(),
-                }
+                },
+                Animator::new(sparkle_seq),
             );
 
-            let entity = q_bg.single();
-            commands.entity(entity)
+
+            let pp_entity = q_panel_parent.single();
+            commands.entity(pp_entity)
                 .with_children(|parent| {
-                    parent.spawn(result_parent)
+                    parent.spawn(ScoreCountingAniTimer(Timer::new(Duration::from_millis(tick_mill), TimerMode::Repeating)));
+                    parent.spawn(ok);
+
+                    if is_new {
+                        parent.spawn(new);
+                    }
+                    if now_score >= 1 {
+                        parent.spawn(medal_parent)
                         .with_children(|parent| {
-                            parent.spawn(gameover_parent)
-                            .with_children(|parent| {
-                                parent.spawn(gameover);
-                            });
-                            parent.spawn(panel_parent)
-                                .with_children(|parent| {
-                                    parent.spawn(panel);
-                                    parent.spawn(score_parent)
-                                        .push_children(vstr_now.as_slice());
-                                    parent.spawn(best_parent)
-                                        .push_children(vstr_best.as_slice());
-                                    if is_new {
-                                        parent.spawn(new);
-                                    }
-                                    if now_score >= 1 {
-                                        parent.spawn(medal_parent)
-                                        .with_children(|parent| {
-                                            parent.spawn(medal);
-                                            parent.spawn(sparkle);
-                                        });
-                                    }
-                                });
-                            parent.spawn(ok);
+                            parent.spawn(medal);
+                            parent.spawn(sparkle);
                         });
+                    }
                 });
+
         }
     }
 }
 
-pub fn tween_callback_result_to_menu(
+pub fn tween_callback_spakle_start(
+    mut commands: Commands,
     mut reader: EventReader<TweenCompleted>,
-    mut next_state: ResMut<NextState<States>>,
+    q_sparkle: Query<Entity, With<Sparkle>>,
 ) {
     for event in reader.read() {
-        if event.user_data == TWEEN_RESULT_TO_MENU {
-            next_state.set(States::MainMenu);
-        }
-    }
-}
-
-pub fn tween_callback_mask_center_back(
-    mut reader: EventReader<TweenCompleted>,
-    mut q_mask: Query<&mut Transform, With<MaskCenter>>
-) {
-    for event in reader.read() {
-        if event.user_data == TWEEN_MASK_CENTER_BACK {
-            if let Ok(mut transform) = q_mask.get_single_mut() {
-                transform.translation.z = -1.;
-            }
-        }
-    }
-}
-
-pub fn spakle_animation(
-    atlases: ResMut<Assets<TextureAtlasLayout>>,
-    time: Res<Time>,
-    mut q_ani: Query<(&mut TextureAtlas, &mut SparkleAniTimer, &mut Transform), With<Sparkle>>
-) {
-    for (mut at, mut ti, mut transform) in &mut q_ani {
-        ti.0.tick(time.delta());
-        if ti.0.just_finished() {
-            let a = &at.layout;
-            let a = atlases.get(a.id()).unwrap();
-            
-            at.index = (at.index + 1) % a.textures.len();
-            if at.index == 0 {
-                let rx = rand::thread_rng().gen_range(-8.0..8.0);
-                let ry = rand::thread_rng().gen_range(-8.0..8.0);
-                transform.translation.x = rx;
-                transform.translation.y = ry;
-            }
+        if event.user_data == TWEEN_SPARKLE_START {
+            let sparkle = q_sparkle.single();
+            commands.entity(sparkle)
+                .insert(
+                    SparkleAniTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+                );
         }
     }
 }

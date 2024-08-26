@@ -96,7 +96,8 @@ pub fn enter(
                         start: BLACK.into(),
                         end: Color::srgba_u8(0, 0, 0, 0),
                     },
-                ).with_completed_event(TWEEN_MASK_CENTER_BACK);
+                )
+                .with_completed_event(TWEEN_MASK_CENTER_BACK);
                 
                 let seq = transition_tween.then(transition_tween2);
                 commands.entity(entity).insert(Animator::new(seq));

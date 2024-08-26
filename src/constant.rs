@@ -12,3 +12,6 @@ pub const TWEEN_MENU_TO_GAME: u64 = 1;
 pub const TWEEN_MASK_CENTER_BACK: u64 = 2;
 pub const TWEEN_DEATH_WHITE: u64 = 3;
 pub const TWEEN_RESULT_TO_MENU: u64 = 4;
+pub const TWEEN_PANEL_UP_END: u64 =  5;
+
+pub const TWEEN_SPARKLE_START: u64 = 6;

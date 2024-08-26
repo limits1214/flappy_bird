@@ -181,6 +181,17 @@ pub fn enter(
         })
     );
 
+    let sky_collider = (
+        Name::new("skyCollider"),
+        // GroundCollider,
+        RigidBody::Static,
+        Collider::rectangle(168., 56.),
+        TransformBundle::from_transform(Transform {
+            translation: Vec3::new(0., 200., Z_INDEX_1),
+            ..default()
+        })
+    );
+
     let guide = (
         Name::new("guide"),
         SpriteBundle {
@@ -301,6 +312,7 @@ pub fn enter(
             parent.spawn(bird);
             parent.spawn(ground);
             parent.spawn(ground_collider);
+            parent.spawn(sky_collider);
         });
 
     ew_resize.send(ResizeEvent);
