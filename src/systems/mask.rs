@@ -6,6 +6,7 @@ use crate::{
         resize::Resizable,
     },
     constant::{MASK_Z_INDEX, ORIGINAL_HEIGHT, ORIGINAL_WIDTH},
+    prelude::MASK_CENTER_BACK_Z_INDEX,
 };
 
 pub fn spawn_mask(mut commands: Commands) {
@@ -90,7 +91,7 @@ pub fn spawn_mask(mut commands: Commands) {
                 ..default()
             },
             transform: Transform {
-                translation: Vec3::new(0., 0., mask_z),
+                translation: Vec3::new(0., 0., MASK_CENTER_BACK_Z_INDEX),
                 ..default()
             },
             ..default()
