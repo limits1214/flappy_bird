@@ -1,7 +1,11 @@
 자산 출저
 https://bitbucket.org/EdwardAngeles/godot-engine-tutorial-flappy-bird/src/master/
 
-
+rust-analyzer.cargo.target
+    wasm32-unknown-unknown
+    aarch64-linux-android
+    aarch64-apple-ios
+    
 1. vscode setting
    1. rustalanayzer
 2. rustfmt setting

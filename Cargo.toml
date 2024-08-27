@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = ["android", "web"]
+members = ["android", "ios", "web"]
 
 [features]
 default = ["inspector"]
@@ -51,6 +51,10 @@ wasm-bindgen = "0.2.93"
 jni_fn = "0.1.2"
 jni = "0.21.1"
 ndk-context = "0.1"
+
+
+[patch.crates-io]
+winit = { git = "https://github.com/lsy969999/winit.git", branch = "patch-ios-0.30.0" }
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
