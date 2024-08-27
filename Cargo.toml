@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = ["web"]
+members = ["android", "web"]
 
 [features]
 default = ["inspector"]
@@ -46,6 +46,11 @@ bevy-inspector-egui = { version = "0.25.2", features = [
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "0.2.93"
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni_fn = "0.1.2"
+jni = "0.21.1"
+ndk-context = "0.1"
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]

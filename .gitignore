@@ -3,3 +3,6 @@
 
 wasm/
 .vscode/settings.json
+
+jniLibs/
+android/android_studio/app/src/main/assets
