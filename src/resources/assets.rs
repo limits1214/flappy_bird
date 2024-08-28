@@ -30,6 +30,8 @@ pub struct FlappyBirdAssets {
     pub button_menu: Handle<Image>,
     #[asset(path = "sprites/button_ok.png")]
     pub button_ok: Handle<Image>,
+    #[asset(path = "sprites/button_ad.png")]
+    pub button_ad: Handle<Image>,
     #[asset(path = "sprites/button_pause.png")]
     pub button_pause: Handle<Image>,
     #[asset(path = "sprites/button_resume.png")]

@@ -298,8 +298,8 @@ pub fn tween_callback_panel_up(
                 EaseFunction::QuadraticInOut,
                 Duration::from_millis(100),
                 TransformPositionLens {
-                    start: Vec3::new(0., -60., Z_INDEX_MINUS),
-                    end: Vec3::new(0., -60., Z_INDEX_3),
+                    start: Vec3::new(0., -40., Z_INDEX_MINUS),
+                    end: Vec3::new(0., -40., Z_INDEX_3),
                 },
             );
 
@@ -314,22 +314,52 @@ pub fn tween_callback_panel_up(
                     // },
                     texture: fb_assets.button_ok.clone(),
                     transform: Transform {
-                        translation: Vec3::new(0., -60., Z_INDEX_MINUS),
+                        translation: Vec3::new(0., -40., Z_INDEX_MINUS),
                         ..default()
                     },
                     ..default()
                 },
                 On::<Pointer<Down>>::target_component_mut::<Transform>(|_, transform| {
-                    transform.translation.y = -61.;
+                    transform.translation.y = -41.;
                 }),
                 On::<Pointer<Up>>::target_component_mut::<Transform>(|event, transform| {
-                    transform.translation.y = -60.;
+                    transform.translation.y = -40.;
                 }),
                 On::<Pointer<DragEnd>>::target_component_mut::<Transform>(|event, transform| {
-                    transform.translation.y = -60.;
+                    transform.translation.y = -40.;
                 }),
                 On::<Pointer<Click>>::send_event::<ResultToMainPickingEvent>(),
                 Animator::new(ok_seq),
+            );
+
+            match fb_assets.button_ad.clone() {
+                Handle::Strong(_) => {
+                    info!("handle strong");
+                }
+                Handle::Weak(_) => {
+                    info!("handle weak");
+                }
+            }
+            let delay_ad = Delay::new(Duration::from_millis(1000));
+
+            let tween_ad = Tween::new(
+                EaseFunction::QuadraticInOut,
+                Duration::from_millis(100),
+                TransformPositionLens {
+                    start: Vec3::new(0., -60., Z_INDEX_MINUS),
+                    end: Vec3::new(0., -60., Z_INDEX_3),
+                },
+            );
+
+            let ad_seq = delay_ad.then(tween_ad);
+            let ad = (
+                Name::new("ad btn"),
+                SpriteBundle {
+                    texture: fb_assets.button_ad.clone(),
+                    transform: Transform::from_xyz(0., -60., Z_INDEX_MINUS),
+                    ..default()
+                },
+                Animator::new(ad_seq),
             );
 
             let medal_parent = (
@@ -472,6 +502,7 @@ pub fn tween_callback_panel_up(
                     TimerMode::Repeating,
                 )));
                 parent.spawn(ok);
+                parent.spawn(ad);
 
                 if is_new {
                     parent.spawn(new);
