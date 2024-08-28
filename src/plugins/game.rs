@@ -1,4 +1,4 @@
-use crate::events::game::{JumpEvent, ResultEvent, ScoreUpEvent};
+use crate::events::game::{ResultEvent, ScoreUpEvent};
 use crate::prelude::animation::{bird_animation, score_couting_ani, spakle_animation};
 use crate::prelude::movement::{ground_movement, pipe_movement};
 use crate::resources::game::GameConfig;
@@ -9,14 +9,13 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<JumpEvent>()
-            .add_event::<ScoreUpEvent>()
+        app.add_event::<ScoreUpEvent>()
             .add_event::<ResultEvent>()
             .insert_resource(GameConfig { score: 0 })
             .add_systems(OnEnter(MyStates::Game(Game::Init)), game_enter)
             .add_systems(
                 Update,
-                (bird_animation, ground_movement, jump).run_if(
+                (bird_animation, ground_movement).run_if(
                     in_state(MyStates::Game(Game::Guide))
                         .or_else(in_state(MyStates::Game(Game::Game))),
                 ),

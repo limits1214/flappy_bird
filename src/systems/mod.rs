@@ -6,6 +6,7 @@ pub mod movement;
 pub mod on_game;
 pub mod on_main_menu;
 pub mod on_result;
+pub mod picking_callback;
 pub mod resize;
 pub mod score;
 pub mod tween_callback;

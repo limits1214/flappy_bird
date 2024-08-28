@@ -1,3 +1,4 @@
+use crate::events::picking_callback::ResultToMainPickingEvent;
 use crate::prelude::*;
 
 pub fn tween_callback_menu_to_game(
@@ -327,35 +328,7 @@ pub fn tween_callback_panel_up(
                 On::<Pointer<DragEnd>>::target_component_mut::<Transform>(|event, transform| {
                     transform.translation.y = -60.;
                 }),
-                On::<Pointer<Click>>::run(
-                    |mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>,
-                     mut commands: Commands| {
-                        if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
-                            transform.translation.z = MASK_CENTER_FORE_Z_INDEX;
-                            let transition_tween = Tween::new(
-                                EaseFunction::QuarticInOut,
-                                Duration::from_millis(500),
-                                SpriteColorLens {
-                                    start: Color::srgba_u8(0, 0, 0, 0),
-                                    end: BLACK.into(),
-                                },
-                            )
-                            .with_completed_event(TWEEN_RESULT_TO_MENU);
-                            let transition_tween2 = Tween::new(
-                                EaseFunction::QuarticInOut,
-                                Duration::from_millis(500),
-                                SpriteColorLens {
-                                    start: BLACK.into(),
-                                    end: Color::srgba_u8(0, 0, 0, 0),
-                                },
-                            )
-                            .with_completed_event(TWEEN_MASK_CENTER_BACK);
-
-                            let seq = transition_tween.then(transition_tween2);
-                            commands.entity(entity).insert(Animator::new(seq));
-                        }
-                    },
-                ),
+                On::<Pointer<Click>>::send_event::<ResultToMainPickingEvent>(),
                 Animator::new(ok_seq),
             );
 

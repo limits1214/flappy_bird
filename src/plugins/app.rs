@@ -11,7 +11,8 @@ use bevy_tweening::TweeningPlugin;
 
 use super::{
     assets::AssetPlugin, game::GamePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin,
-    resize::ResizePlugin, tween_callback::TweenCallbackPlugin,
+    picking_callback::PickingCallbackPlugin, resize::ResizePlugin,
+    tween_callback::TweenCallbackPlugin,
 };
 
 /// 공통 게임 설정
@@ -36,6 +37,7 @@ impl Plugin for AppPlugin {
             .add_plugins(AssetPlugin)
             .add_plugins(MainMenuPlugin)
             .add_plugins(TweenCallbackPlugin)
+            .add_plugins(PickingCallbackPlugin)
             .add_plugins(GamePlugin);
 
         // 2d 카메라 생성

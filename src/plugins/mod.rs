@@ -5,6 +5,7 @@ mod game;
 mod inspector;
 mod main_menu;
 mod mask;
+mod picking_callback;
 mod resize;
 mod tween_callback;
 

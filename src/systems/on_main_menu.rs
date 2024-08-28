@@ -9,7 +9,7 @@ use crate::{
         states::InMainMenu,
     },
     constant::{TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, Z_INDEX_1},
-    events::resize::ResizeEvent,
+    events::{picking_callback::MainToGamePickingEvent, resize::ResizeEvent},
     prelude::{MASK_CENTER_FORE_Z_INDEX, Z_INDEX_0},
     resources::assets::FlappyBirdAssets,
 };
@@ -82,38 +82,7 @@ pub fn main_enter(
         On::<Pointer<DragEnd>>::target_commands_mut(move |evt, target_commands| {
             target_commands.insert(normal2.clone());
         }),
-        On::<Pointer<Click>>::run(
-            |mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>,
-             mut commands: Commands,
-             audio: Res<Audio>,
-             fb_assets: Res<FlappyBirdAssets>| {
-                audio.play(fb_assets.sfx_swooshing.clone());
-                if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
-                    transform.translation.z = MASK_CENTER_FORE_Z_INDEX;
-                    let transition_tween = Tween::new(
-                        EaseFunction::QuarticInOut,
-                        Duration::from_millis(500),
-                        SpriteColorLens {
-                            start: Color::srgba_u8(0, 0, 0, 0),
-                            end: BLACK.into(),
-                        },
-                    )
-                    .with_completed_event(TWEEN_MENU_TO_GAME);
-                    let transition_tween2 = Tween::new(
-                        EaseFunction::QuarticInOut,
-                        Duration::from_millis(500),
-                        SpriteColorLens {
-                            start: BLACK.into(),
-                            end: Color::srgba_u8(0, 0, 0, 0),
-                        },
-                    )
-                    .with_completed_event(TWEEN_MASK_CENTER_BACK);
-
-                    let seq = transition_tween.then(transition_tween2);
-                    commands.entity(entity).insert(Animator::new(seq));
-                }
-            },
-        ),
+        On::<Pointer<Click>>::send_event::<MainToGamePickingEvent>(),
         SpriteBundle {
             texture: fb_assets.button_play_normal.clone(),
             transform: Transform::from_xyz(0., -40., Z_INDEX_1),

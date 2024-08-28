@@ -1,8 +1,9 @@
-use crate::components::prelude::*;
 use crate::constant::*;
+use crate::events::picking_callback::PausePickingEvent;
 use crate::events::prelude::*;
 use crate::resources::prelude::*;
 use crate::states::prelude::*;
+use crate::{components::prelude::*, events::picking_callback::JumpPickingEvent};
 use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
@@ -41,7 +42,7 @@ pub fn game_enter(
             texture: fb_assets.background_day.clone(),
             ..default()
         },
-        On::<Pointer<Down>>::send_event::<JumpEvent>(),
+        On::<Pointer<Down>>::send_event::<JumpPickingEvent>(),
     );
 
     let bird = (
@@ -65,68 +66,13 @@ pub fn game_enter(
         },
     );
 
-    let pause_sprite = fb_assets.button_pause.clone();
-    let resume_sprite = fb_assets.button_resume.clone();
-
     let pause_btn = (
         Name::new("pause"),
         SpatialBundle::from_transform(Transform {
             translation: Vec3::new(-55., 110., Z_INDEX_2),
             ..default()
         }),
-        On::<Pointer<Click>>::run(
-            move |event: Listener<Pointer<Click>>,
-                  now_state: Res<State<MyStates>>,
-                  mut next_state: ResMut<NextState<MyStates>>,
-                  mut commands: Commands,
-                  mut time: ResMut<Time<Physics>>,
-                  mut q_bird_tween: Query<&mut Animator<Transform>, With<Bird>>| {
-                info!("pause!!");
-                match *now_state.get() {
-                    MyStates::Game(Game::GamePause) => {
-                        next_state.set(MyStates::Game(Game::Game));
-                        if let Some(mut ec) = commands.get_entity(event.target) {
-                            ec.insert(pause_sprite.clone());
-                        }
-                        time.unpause();
-                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                            ani.state = AnimatorState::Playing;
-                        }
-                    }
-                    MyStates::Game(Game::GuidePause) => {
-                        next_state.set(MyStates::Game(Game::Guide));
-                        if let Some(mut ec) = commands.get_entity(event.target) {
-                            ec.insert(pause_sprite.clone());
-                        }
-                        time.unpause();
-                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                            ani.state = AnimatorState::Playing;
-                        }
-                    }
-                    MyStates::Game(Game::Guide) => {
-                        next_state.set(MyStates::Game(Game::GuidePause));
-                        if let Some(mut ec) = commands.get_entity(event.target) {
-                            ec.insert(pause_sprite.clone());
-                        }
-                        time.pause();
-                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                            ani.state = AnimatorState::Paused;
-                        }
-                    }
-                    MyStates::Game(Game::Game) => {
-                        next_state.set(MyStates::Game(Game::GamePause));
-                        if let Some(mut ec) = commands.get_entity(event.target) {
-                            ec.insert(pause_sprite.clone());
-                        }
-                        time.pause();
-                        if let Ok(mut ani) = q_bird_tween.get_single_mut() {
-                            ani.state = AnimatorState::Paused;
-                        }
-                    }
-                    _ => {}
-                };
-            },
-        ),
+        On::<Pointer<Click>>::send_event::<PausePickingEvent>(),
     );
 
     let pause_btn_sprite = (
