@@ -1,3 +1,4 @@
+pub mod ffi;
 pub mod game;
 pub mod picking_callback;
 pub mod resize;

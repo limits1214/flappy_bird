@@ -5,6 +5,8 @@ use bevy_inspector_egui::{
 };
 use iyes_perf_ui::{entries::PerfUiBundle, PerfUiPlugin};
 
+use crate::ffi::{Ffi, FfiGreet};
+
 pub struct InspectorPlugin;
 
 impl Plugin for InspectorPlugin {
@@ -38,5 +40,9 @@ fn inspector_ui(world: &mut World) {
         egui::ScrollArea::vertical().show(ui, |ui| {
             bevy_inspector_egui::bevy_inspector::ui_for_world(world, ui);
         });
+
+        if ui.button("ffi greet").clicked() {
+            Ffi::greet();
+        }
     });
 }

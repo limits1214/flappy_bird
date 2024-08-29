@@ -1,8 +1,11 @@
-use super::{Ffi, FfiKv};
+use crate::events::ffi::FfiEvent;
+
+use super::{Ffi, FfiGreet, FfiKv, SENDER};
 use directories::ProjectDirs;
 use std::{
     io::{Read, Write},
     path::PathBuf,
+    time::Duration,
 };
 
 const QUALIFIER: &str = "qualifier";
@@ -84,4 +87,17 @@ fn set_test() {
     let score = Score { score: 1200 };
     let testjson = serde_json::to_string(&score).unwrap();
     Ffi::set("test", &testjson);
+}
+
+impl FfiGreet for Ffi {
+    fn greet() {
+        something()
+    }
+}
+
+fn something() {
+    std::thread::spawn(|| {
+        std::thread::sleep(Duration::from_millis(500));
+        SENDER.get().unwrap().send(FfiEvent::Greet);
+    });
 }

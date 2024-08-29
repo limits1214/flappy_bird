@@ -604,6 +604,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_crossbeam_event"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "beeacd0d403464079a45aa2c816089d42d5d931f9787eabd440dda756e64cd3a"
+dependencies = [
+ "bevy",
+ "crossbeam-channel",
+]
+
+[[package]]
 name = "bevy_derive"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -725,6 +735,7 @@ dependencies = [
  "bevy",
  "bevy-inspector-egui",
  "bevy_asset_loader",
+ "bevy_crossbeam_event",
  "bevy_framepace",
  "bevy_kira_audio",
  "bevy_mod_picking",

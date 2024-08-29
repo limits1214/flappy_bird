@@ -43,6 +43,7 @@ bevy-inspector-egui = { version = "0.25.2", features = [
     "bevy_render",
     "egui_open_url",
 ], default-features = false, optional = true }
+bevy_crossbeam_event = "0.6.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "0.2.93"

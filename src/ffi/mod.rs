@@ -1,4 +1,9 @@
+use std::sync::OnceLock;
+
+use bevy_crossbeam_event::CrossbeamEventSender;
 use serde::{Deserialize, Serialize};
+
+use crate::events::ffi::FfiEvent;
 
 #[cfg(not(any(target_os = "ios", target_os = "android", target_arch = "wasm32")))]
 mod desktop;
@@ -22,4 +27,13 @@ pub trait FfiKv {
     fn set(key: &str, val: &str);
 }
 
+pub trait FfiGreet {
+    fn greet();
+}
+
 pub struct Ffi;
+
+static SENDER: OnceLock<CrossbeamEventSender<FfiEvent>> = OnceLock::new();
+pub fn set_sender(sender: CrossbeamEventSender<FfiEvent>) {
+    let _ = SENDER.set(sender);
+}

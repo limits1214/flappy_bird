@@ -1,6 +1,7 @@
 pub mod animation;
 pub mod assets;
 pub mod bird;
+pub mod ffi;
 pub mod mask;
 pub mod movement;
 pub mod on_game;

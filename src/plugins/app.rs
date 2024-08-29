@@ -10,8 +10,8 @@ use bevy_mod_picking::DefaultPickingPlugins;
 use bevy_tweening::TweeningPlugin;
 
 use super::{
-    assets::AssetPlugin, game::GamePlugin, main_menu::MainMenuPlugin, mask::MaskPlugin,
-    picking_callback::PickingCallbackPlugin, resize::ResizePlugin,
+    assets::AssetPlugin, ffi::FfiPlugin, game::GamePlugin, main_menu::MainMenuPlugin,
+    mask::MaskPlugin, picking_callback::PickingCallbackPlugin, resize::ResizePlugin,
     tween_callback::TweenCallbackPlugin,
 };
 
@@ -38,6 +38,7 @@ impl Plugin for AppPlugin {
             .add_plugins(MainMenuPlugin)
             .add_plugins(TweenCallbackPlugin)
             .add_plugins(PickingCallbackPlugin)
+            .add_plugins(FfiPlugin)
             .add_plugins(GamePlugin);
 
         // 2d 카메라 생성
