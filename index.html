@@ -30,9 +30,14 @@
     function ffi_kv_set(key, val) {
         localStorage.setItem(key, val);
     }
+    function ffi_greet_to_js() {
+        console.log('something');
+        window.ffi_greet_to_rust();
+    }
   </script>
   <script type="module">
-    import init, { start_app } from '/web/wasm/web.js'
+    import init, { start_app, ffi_greet_to_rust } from '/web/wasm/web.js'
+    window.ffi_greet_to_rust = ffi_greet_to_rust;
 
     await init()
     await start_app()
