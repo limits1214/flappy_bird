@@ -53,6 +53,8 @@ jni_fn = "0.1.2"
 jni = "0.21.1"
 ndk-context = "0.1"
 
+[target.'cfg(target_os = "ios")'.dependencies]
+raw-window-handle = "0.6.0"
 
 [patch.crates-io]
 winit = { git = "https://github.com/lsy969999/winit.git", branch = "patch-ios-0.30.0" }

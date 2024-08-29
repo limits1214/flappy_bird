@@ -746,6 +746,7 @@ dependencies = [
  "jni_fn",
  "ndk-context",
  "rand",
+ "raw-window-handle",
  "serde",
  "serde_json",
  "wasm-bindgen",

@@ -52,5 +52,20 @@ fn inspector_ui(world: &mut World) {
                 Ffi::show();
             }
         }
+
+        #[cfg(target_os = "ios")]
+        {
+            use bevy::winit::WinitWindows;
+            use raw_window_handle::HasWindowHandle;
+            let mut q_primary = world.query_filtered::<Entity, With<PrimaryWindow>>();
+            let windows = world.non_send_resource::<WinitWindows>();
+            let e = q_primary.single(&world);
+            let winwrapper = windows.get_window(e).unwrap();
+            let wh = winwrapper.window_handle().unwrap();
+            let rwh = wh.as_raw();
+            if ui.button("rwh test").clicked() {
+                Ffi::rwh_test(rwh);
+            }
+        }
     });
 }

@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		134866208A035F8615C99114 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A1E5B62F48B379829E8A0D /* Metal.framework */; };
 		2604C99FAB5A8322EDCABB9F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE71FBCAA714DB4F42459106 /* UIKit.framework */; };
 		3D724BEA2C7D885C00AB3795 /* flappy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D724BE92C7D885C00AB3795 /* flappy.swift */; };
+		3D9EE6312C8079D30068135A /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 3D9EE6302C8079D30068135A /* GoogleMobileAds */; };
 		442540D056ADB9AE61A0A590 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F1B41978FA53999AA836D0F /* Security.framework */; };
 		55892F1396056740E1AF9685 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF7DE91055EBD05ED77E57F9 /* main.m */; };
 		55B7188F81C3C4183F81D3AE /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A39528EB2CCB182F5328223A /* libc++.tbd */; };
@@ -47,6 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D9EE6312C8079D30068135A /* GoogleMobileAds in Frameworks */,
 				442540D056ADB9AE61A0A590 /* Security.framework in Frameworks */,
 				134866208A035F8615C99114 /* Metal.framework in Frameworks */,
 				2604C99FAB5A8322EDCABB9F /* UIKit.framework in Frameworks */,
@@ -135,6 +137,9 @@
 				19D4B9C22ADC6705B5132B4C /* PBXTargetDependency */,
 			);
 			name = flappy_bevy;
+			packageProductDependencies = (
+				3D9EE6302C8079D30068135A /* GoogleMobileAds */,
+			);
 			productName = bevy_mobile_example;
 			productReference = 55EAC02897847195D2F44C15 /* flappy_bevy.app */;
 			productType = "com.apple.product-type.application";
@@ -160,6 +165,9 @@
 				en,
 			);
 			mainGroup = 8F2E3E6040EAD2EC9F3FA530;
+			packageReferences = (
+				3D05A5C02C80771100B30497 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -285,7 +293,7 @@
 					"ios-src/",
 				);
 				INFOPLIST_FILE = "ios-src/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -399,7 +407,7 @@
 					"ios-src/",
 				);
 				INFOPLIST_FILE = "ios-src/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -476,6 +484,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3D05A5C02C80771100B30497 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3D9EE6302C8079D30068135A /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D05A5C02C80771100B30497 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8DBF1E2B5C613DA41701F6D9 /* Project object */;
 }

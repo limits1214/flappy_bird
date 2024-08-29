@@ -27,5 +27,10 @@ impl Plugin for FfiPlugin {
             .unwrap();
 
         set_sender(sender.clone());
+
+        #[cfg(target_os = "ios")]
+        {
+            Ffi::init_ad()
+        }
     }
 }

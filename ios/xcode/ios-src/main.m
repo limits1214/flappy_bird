@@ -1,6 +1,5 @@
 #import "bindings.h"
-
-int main() {
+int main(void) {
     main_rs();
     return 0;
 }
