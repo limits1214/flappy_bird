@@ -1,9 +1,10 @@
 use bevy::prelude::*;
+use bevy_tweening::Animator;
 use rand::Rng;
 
 use crate::prelude::{
-    BestScore, Bird, BirdAnimateTimer, FlappyBirdAssets, GameConfig, NowScore,
-    ScoreCountingAniTimer, Sparkle, SparkleAniTimer,
+    AdRespawn, AdRespawnTimer, BestScore, Bird, BirdAnimateTimer, FlappyBirdAssets, GameConfig,
+    NowScore, ScoreCountingAniTimer, Sparkle, SparkleAniTimer,
 };
 
 pub fn bird_animation(
@@ -153,6 +154,27 @@ pub fn score_couting_ani(
 
                 best_score.0 += 1;
             }
+        }
+    }
+}
+
+pub fn bird_ad_spawn_ani(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut q_bird: Query<(Entity, &mut AdRespawnTimer, &Sprite), With<Bird>>,
+) {
+    if let Ok((entity, mut timer, sprite)) = q_bird.get_single_mut() {
+        timer.0.tick(time.delta());
+        if timer.0.just_finished() {
+            commands
+                .entity(entity)
+                .remove::<AdRespawn>()
+                .remove::<AdRespawnTimer>()
+                .remove::<Animator<Sprite>>()
+                .insert(Sprite {
+                    color: Color::WHITE,
+                    ..default()
+                });
         }
     }
 }

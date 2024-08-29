@@ -1,5 +1,7 @@
 use crate::events::game::{ResultEvent, ScoreUpEvent};
-use crate::prelude::animation::{bird_animation, score_couting_ani, spakle_animation};
+use crate::prelude::animation::{
+    bird_ad_spawn_ani, bird_animation, score_couting_ani, spakle_animation,
+};
 use crate::prelude::movement::{ground_movement, pipe_movement};
 use crate::resources::game::GameConfig;
 use crate::states::{Game, MyStates};
@@ -22,7 +24,8 @@ impl Plugin for GamePlugin {
             )
             .add_systems(
                 Update,
-                (pipe_movement, bird_colliding_check).run_if(in_state(MyStates::Game(Game::Game))),
+                (pipe_movement, bird_colliding_check, bird_ad_spawn_ani)
+                    .run_if(in_state(MyStates::Game(Game::Game))),
             )
             .add_systems(
                 Update,
@@ -53,7 +56,7 @@ impl Plugin for GamePlugin {
                     entered: MyStates::Game(Game::Game),
                     exited: MyStates::Game(Game::Result),
                 },
-                trsition_result_on_main,
+                trsition_result_to_game,
             );
     }
 }

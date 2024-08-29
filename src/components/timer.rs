@@ -8,3 +8,6 @@ pub struct ScoreCountingAniTimer(pub Timer);
 
 #[derive(Component, Debug)]
 pub struct BirdAnimateTimer(pub Timer);
+
+#[derive(Component, Debug)]
+pub struct AdRespawnTimer(pub Timer);

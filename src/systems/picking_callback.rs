@@ -4,15 +4,18 @@ use bevy_kira_audio::{Audio, AudioControl};
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{
     lens::{SpriteColorLens, TransformRotationLens},
-    Animator, AnimatorState, Delay, EaseFunction, Tween,
+    Animator, AnimatorState, Delay, EaseFunction, RepeatCount, Tween,
 };
 use std::{f32::consts::PI, time::Duration};
 
 use crate::{
-    events::picking_callback::{JumpPickingEvent, PausePickingEvent, ResultToMainPickingEvent},
+    events::picking_callback::{
+        JumpPickingEvent, PausePickingEvent, ResultToGamePickingEvent, ResultToMainPickingEvent,
+    },
     prelude::{
-        Bird, FlappyBirdAssets, Guide, MaskCenter, MASK_CENTER_FORE_Z_INDEX, PAUSE_BTN_DEPTH,
-        TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME, TWEEN_RESULT_TO_MENU,
+        AdRespawn, AdRespawnTimer, Bird, FlappyBirdAssets, Guide, MaskCenter,
+        MASK_CENTER_FORE_Z_INDEX, PAUSE_BTN_DEPTH, TWEEN_MASK_CENTER_BACK, TWEEN_MENU_TO_GAME,
+        TWEEN_RESULT_TO_GAME, TWEEN_RESULT_TO_MENU,
     },
     resources::prelude::ResizeScale,
     states::{Game, MyStates},
@@ -208,6 +211,34 @@ pub fn result_to_main(
 
             let seq = transition_tween.then(transition_tween2);
             commands.entity(entity).insert(Animator::new(seq));
+        }
+    }
+}
+
+pub fn result_to_game(
+    mut read: EventReader<ResultToGamePickingEvent>,
+    mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>,
+    mut commands: Commands,
+    mut q_bird: Query<Entity, With<Bird>>,
+    mut next_state: ResMut<NextState<MyStates>>,
+) {
+    for _event in read.read() {
+        next_state.set(MyStates::Game(Game::Game));
+        if let Ok(entity) = q_bird.get_single() {
+            let tween = Tween::new(
+                EaseFunction::QuadraticInOut,
+                Duration::from_millis(200),
+                SpriteColorLens {
+                    start: Color::WHITE,
+                    end: Color::srgba_u8(0, 0, 0, 0),
+                },
+            )
+            .with_repeat_count(RepeatCount::Infinite);
+            commands
+                .entity(entity)
+                .insert(AdRespawn)
+                .insert(AdRespawnTimer(Timer::from_seconds(3., TimerMode::Once)))
+                .insert(Animator::new(tween));
         }
     }
 }

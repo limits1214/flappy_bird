@@ -1,3 +1,5 @@
+use crate::events::picking_callback::ResultToGamePickingEvent;
+
 use crate::events::picking_callback::ResultToMainPickingEvent;
 use crate::prelude::*;
 
@@ -354,6 +356,15 @@ pub fn tween_callback_panel_up(
             let ad_seq = delay_ad.then(tween_ad);
             let ad = (
                 Name::new("ad btn"),
+                On::<Pointer<Down>>::target_component_mut::<Transform>(|_, transform| {
+                    transform.translation.y = -61.;
+                }),
+                On::<Pointer<Up>>::target_component_mut::<Transform>(|event, transform| {
+                    transform.translation.y = -60.;
+                }),
+                On::<Pointer<DragEnd>>::target_component_mut::<Transform>(|event, transform| {
+                    transform.translation.y = -60.;
+                }),
                 SpriteBundle {
                     texture: fb_assets.button_ad.clone(),
                     transform: Transform::from_xyz(0., -60., Z_INDEX_MINUS),
@@ -502,7 +513,16 @@ pub fn tween_callback_panel_up(
                     TimerMode::Repeating,
                 )));
                 parent.spawn(ok);
-                parent.spawn(ad);
+
+                #[cfg(any(target_os = "ios", target_os = "android"))]
+                {
+                    parent.spawn((
+                        ad,
+                        On::<Pointer<Click>>::target_commands_mut(|event, commands| {
+                            commands.remove::<On<Pointer<Click>>>();
+                        }),
+                    ));
+                }
 
                 if is_new {
                     parent.spawn(new);

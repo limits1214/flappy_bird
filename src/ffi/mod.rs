@@ -31,6 +31,11 @@ pub trait FfiGreet {
     fn greet();
 }
 
+#[cfg(any(target_os = "ios", target_os = "android"))]
+pub trait FfiAd {
+    fn show();
+}
+
 pub struct Ffi;
 
 static SENDER: OnceLock<CrossbeamEventSender<FfiEvent>> = OnceLock::new();

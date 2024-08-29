@@ -24,7 +24,13 @@ pub fn trsition_result_on_main(
     }
 }
 
-pub fn trsition_result_to_game() {}
+pub fn trsition_result_to_game(mut commands: Commands, q_in_result: Query<Entity, With<InResult>>) {
+    for e in &q_in_result {
+        if let Some(ec) = commands.get_entity(e) {
+            ec.despawn_recursive();
+        }
+    }
+}
 
 pub fn game_enter(
     mut commands: Commands,

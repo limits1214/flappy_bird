@@ -14,7 +14,7 @@ use bevy_tweening::{Animator, Delay, EaseFunction, Tween};
 
 pub fn bird_colliding_check(
     mut commands: Commands,
-    q_bird_colliders: Query<&CollidingEntities, With<Bird>>,
+    q_bird_colliders: Query<&CollidingEntities, (With<Bird>, Without<AdRespawn>)>,
     q_ground: Query<Entity, With<GroundCollider>>,
     q_pipe_point: Query<Entity, (With<PipePoint>, Without<PointEarned>)>,
     q_pipe: Query<Entity, With<Pipe>>,

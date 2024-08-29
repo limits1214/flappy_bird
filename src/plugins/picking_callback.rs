@@ -2,10 +2,11 @@ use bevy::prelude::*;
 
 use crate::{
     events::picking_callback::{
-        JumpPickingEvent, MainToGamePickingEvent, PausePickingEvent, ResultToMainPickingEvent,
+        JumpPickingEvent, MainToGamePickingEvent, PausePickingEvent, ResultToGamePickingEvent,
+        ResultToMainPickingEvent,
     },
     states::{Game, MyStates},
-    systems::picking_callback::{bird_jump, main_to_game, puase, result_to_main},
+    systems::picking_callback::{bird_jump, main_to_game, puase, result_to_game, result_to_main},
 };
 
 pub struct PickingCallbackPlugin;
@@ -16,6 +17,7 @@ impl Plugin for PickingCallbackPlugin {
             .add_event::<MainToGamePickingEvent>()
             .add_event::<PausePickingEvent>()
             .add_event::<ResultToMainPickingEvent>()
+            .add_event::<ResultToGamePickingEvent>()
             .add_systems(
                 Update,
                 bird_jump.run_if(
@@ -33,6 +35,10 @@ impl Plugin for PickingCallbackPlugin {
             .add_systems(
                 Update,
                 result_to_main.run_if(on_event::<ResultToMainPickingEvent>()),
+            )
+            .add_systems(
+                Update,
+                result_to_game.run_if(on_event::<ResultToGamePickingEvent>()),
             );
     }
 }

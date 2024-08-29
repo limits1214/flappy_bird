@@ -60,3 +60,6 @@ pub struct BestScore(pub u32);
 
 #[derive(Component)]
 pub struct Sparkle;
+
+#[derive(Component)]
+pub struct AdRespawn;
