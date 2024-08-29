@@ -17,6 +17,7 @@ pub fn trsition_result_on_main(
     mut config: ResMut<GameConfig>,
 ) {
     config.score = 0;
+    config.is_ad_show = false;
     for e in &q_in_game {
         if let Some(ec) = commands.get_entity(e) {
             ec.despawn_recursive();

@@ -516,12 +516,16 @@ pub fn tween_callback_panel_up(
 
                 #[cfg(any(target_os = "ios", target_os = "android"))]
                 {
-                    parent.spawn((
-                        ad,
-                        On::<Pointer<Click>>::target_commands_mut(|event, commands| {
-                            commands.remove::<On<Pointer<Click>>>();
-                        }),
-                    ));
+                    if !config.is_ad_show {
+                        config.is_ad_show = true;
+                        parent.spawn((
+                            ad,
+                            On::<Pointer<Click>>::target_commands_mut(|event, commands| {
+                                commands.remove::<On<Pointer<Click>>>();
+                                Ffi::show();
+                            }),
+                        ));
+                    }
                 }
 
                 if is_new {

@@ -26,10 +26,11 @@ impl Plugin for AppPlugin {
             .add_plugins(PhysicsPlugins::default())
             .add_plugins(TweeningPlugin)
             .add_plugins(AudioPlugin)
-            .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
-            .insert_resource(FramepaceSettings {
-                limiter: Limiter::from_framerate(TARGET_FRAME_RATE),
-            });
+            // .insert_resource(Time::new_with(Physics::fixed_hz(TARGET_FRAME_RATE)))
+            // .insert_resource(FramepaceSettings {
+            //     limiter: Limiter::from_framerate(TARGET_FRAME_RATE),
+            // })
+            ;
 
         // 내부 내부 설정
         app.add_plugins(MaskPlugin)

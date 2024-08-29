@@ -1,9 +1,12 @@
 use jni::{
-    objects::{JObject, JString, JValue},
-    JavaVM,
+    objects::{JClass, JObject, JString, JValue},
+    JNIEnv, JavaVM,
 };
+use jni_fn::jni_fn;
 
-use super::{Ffi, FfiKv};
+use crate::events::ffi::FfiEvent;
+
+use super::{Ffi, FfiAd, FfiGreet, FfiKv, SENDER};
 
 impl FfiKv for Ffi {
     fn get(key: &str) -> String {
@@ -47,4 +50,35 @@ impl FfiKv for Ffi {
         )
         .unwrap();
     }
+}
+
+impl FfiGreet for Ffi {
+    fn greet() {
+        let ctx = ndk_context::android_context();
+        let vm = unsafe { JavaVM::from_raw(ctx.vm().cast()) }.unwrap();
+        let ctx = unsafe { JObject::from_raw(ctx.context().cast()) };
+        let mut env = vm.attach_current_thread().unwrap();
+        env.call_method(ctx, "ffi_greet_to_android", "()V", &[])
+            .unwrap();
+    }
+}
+
+impl FfiAd for Ffi {
+    fn show() {
+        let ctx = ndk_context::android_context();
+        let vm = unsafe { JavaVM::from_raw(ctx.vm().cast()) }.unwrap();
+        let ctx = unsafe { JObject::from_raw(ctx.context().cast()) };
+        let mut env = vm.attach_current_thread().unwrap();
+        env.call_method(ctx, "ffiAdShow", "()V", &[]).unwrap();
+    }
+}
+
+#[jni_fn("xyz.lsy969999.flappy_bevy.RustBinding")]
+pub fn ffi_greet_to_rust(_: JNIEnv, _: JClass) {
+    SENDER.get().unwrap().send(FfiEvent::Greet);
+}
+
+#[jni_fn("xyz.lsy969999.flappy_bevy.RustBinding")]
+pub fn ffi_ad_dismiss(_: JNIEnv, _: JClass) {
+    SENDER.get().unwrap().send(FfiEvent::AdDismiss);
 }

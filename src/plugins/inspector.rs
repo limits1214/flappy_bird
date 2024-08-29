@@ -44,5 +44,13 @@ fn inspector_ui(world: &mut World) {
         if ui.button("ffi greet").clicked() {
             Ffi::greet();
         }
+
+        #[cfg(any(target_os = "ios", target_os = "android"))]
+        {
+            use crate::ffi::FfiAd;
+            if ui.button("ffi ad show").clicked() {
+                Ffi::show();
+            }
+        }
     });
 }

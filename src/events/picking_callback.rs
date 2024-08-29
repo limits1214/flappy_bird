@@ -38,10 +38,10 @@ impl From<ListenerInput<Pointer<Click>>> for ResultToMainPickingEvent {
 }
 
 #[derive(Event)]
-pub struct ResultToGamePickingEvent(pub Entity, pub f32);
+pub struct ResultToGamePickingEvent;
 
-impl From<ListenerInput<Pointer<Click>>> for ResultToGamePickingEvent {
-    fn from(value: ListenerInput<Pointer<Click>>) -> Self {
-        Self(value.target, value.hit.depth)
-    }
-}
+// impl From<ListenerInput<Pointer<Click>>> for ResultToGamePickingEvent {
+//     fn from(value: ListenerInput<Pointer<Click>>) -> Self {
+//         Self(value.target, value.hit.depth)
+//     }
+// }

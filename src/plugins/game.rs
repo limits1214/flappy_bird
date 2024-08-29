@@ -13,7 +13,10 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<ScoreUpEvent>()
             .add_event::<ResultEvent>()
-            .insert_resource(GameConfig { score: 0 })
+            .insert_resource(GameConfig {
+                score: 0,
+                is_ad_show: false,
+            })
             .add_systems(OnEnter(MyStates::Game(Game::Init)), game_enter)
             .add_systems(
                 Update,
