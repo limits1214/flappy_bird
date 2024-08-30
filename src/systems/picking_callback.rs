@@ -32,7 +32,7 @@ pub fn bird_jump(
     fb_assets: Res<FlappyBirdAssets>,
 ) {
     for JumpPickingEvent(_, a) in read.read() {
-        if *a == PAUSE_BTN_DEPTH {
+        if *a == 1000. - PAUSE_BTN_DEPTH {
             return;
         }
         info!("jump!");

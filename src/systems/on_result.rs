@@ -1,4 +1,8 @@
-use crate::{events::game::ResultEvent, prelude::MASK_CENTER_FORE_Z_INDEX, states::MyStates};
+use crate::{
+    events::game::ResultEvent,
+    prelude::{PauseBtn, MASK_CENTER_FORE_Z_INDEX},
+    states::MyStates,
+};
 use bevy::prelude::*;
 use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween};
 use std::time::Duration;
@@ -9,9 +13,12 @@ pub fn on_result(
     mut reader: EventReader<ResultEvent>,
     mut next_state: ResMut<NextState<MyStates>>,
     mut q_mask_center: Query<(Entity, &mut Transform), With<MaskCenter>>,
+    mut q_pause: Query<Entity, With<PauseBtn>>,
 ) {
     for _ in reader.read() {
         info!("result");
+        let pause_entity = q_pause.single_mut();
+        commands.entity(pause_entity).insert(Visibility::Hidden);
 
         if let Ok((entity, mut transform)) = q_mask_center.get_single_mut() {
             transform.translation.z = MASK_CENTER_FORE_Z_INDEX;

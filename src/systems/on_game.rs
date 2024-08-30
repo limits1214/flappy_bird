@@ -25,12 +25,18 @@ pub fn trsition_result_on_main(
     }
 }
 
-pub fn trsition_result_to_game(mut commands: Commands, q_in_result: Query<Entity, With<InResult>>) {
+pub fn trsition_result_to_game(
+    mut commands: Commands,
+    q_in_result: Query<Entity, With<InResult>>,
+    q_pause: Query<Entity, With<PauseBtn>>,
+) {
     for e in &q_in_result {
         if let Some(ec) = commands.get_entity(e) {
             ec.despawn_recursive();
         }
     }
+    let pause_entity = q_pause.single();
+    commands.entity(pause_entity).insert(Visibility::Inherited);
 }
 
 pub fn game_enter(
@@ -75,6 +81,7 @@ pub fn game_enter(
 
     let pause_btn = (
         Name::new("pause"),
+        PauseBtn,
         SpatialBundle::from_transform(Transform {
             translation: Vec3::new(-55., 110., Z_INDEX_2),
             ..default()

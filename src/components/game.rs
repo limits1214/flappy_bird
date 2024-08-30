@@ -63,3 +63,6 @@ pub struct Sparkle;
 
 #[derive(Component)]
 pub struct AdRespawn;
+
+#[derive(Component)]
+pub struct PauseBtn;
