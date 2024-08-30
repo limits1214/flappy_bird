@@ -83,7 +83,7 @@ pub fn game_enter(
         Name::new("pause"),
         PauseBtn,
         SpatialBundle::from_transform(Transform {
-            translation: Vec3::new(-55., 110., Z_INDEX_2),
+            translation: Vec3::new(-55., 110., PAUSE_BTN_DEPTH),
             ..default()
         }),
         On::<Pointer<Click>>::send_event::<PausePickingEvent>(),

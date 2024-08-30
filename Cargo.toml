@@ -22,7 +22,7 @@ bevy = { version = "0.14.1", features = [
     "multi_threaded",
     # "webgl2",
     # "x11",
-], default-features = true }
+], default-features = false }
 bevy_asset_loader = "0.21.0"
 bevy_framepace = "0.17.1"
 bevy_mod_picking = { version = "0.20.1", features = [
