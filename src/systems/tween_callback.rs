@@ -1,3 +1,6 @@
+use bevy_kira_audio::Audio;
+use bevy_kira_audio::AudioControl;
+
 use crate::events::picking_callback::ResultToGamePickingEvent;
 
 use crate::events::picking_callback::ResultToMainPickingEvent;
@@ -52,6 +55,7 @@ pub fn tween_callback_death_white(
     fb_assets: Res<FlappyBirdAssets>,
     q_bg: Query<Entity, With<Bg>>,
     mut config: ResMut<GameConfig>,
+    audio: Res<Audio>,
 ) {
     reader
         .read()
@@ -60,6 +64,8 @@ pub fn tween_callback_death_white(
             if let Ok(mut transform) = q_mask.get_single_mut() {
                 transform.translation.z = -1.;
             }
+
+            audio.play(fb_assets.sfx_die.clone());
 
             let loaded_score_str = Ffi::get("score");
             let mut loaded_best_score = match serde_json::from_str::<Score>(&loaded_score_str) {

@@ -28,6 +28,8 @@ pub fn bird_jump(
     q_bird: Query<Entity, With<Bird>>,
     resize_scale: Res<ResizeScale>,
     mut next_state: ResMut<NextState<MyStates>>,
+    audio: Res<Audio>,
+    fb_assets: Res<FlappyBirdAssets>,
 ) {
     for JumpPickingEvent(_, a) in read.read() {
         if *a == PAUSE_BTN_DEPTH {
@@ -51,6 +53,9 @@ pub fn bird_jump(
 
         if let Ok(entity) = q_bird.get_single() {
             if let Some(mut ec) = commands.get_entity(entity) {
+                //audio play
+                audio.play(fb_assets.sfx_wing.clone());
+
                 // impulse
                 let mut impulse = ExternalImpulse::default();
                 let scale = resize_scale.0;
@@ -186,9 +191,13 @@ pub fn result_to_main(
     mut read: EventReader<ResultToMainPickingEvent>,
     mut q_mask: Query<(Entity, &mut Transform), With<MaskCenter>>,
     mut commands: Commands,
+    audio: Res<Audio>,
+    fb_assets: Res<FlappyBirdAssets>,
 ) {
     for _event in read.read() {
         if let Ok((entity, mut transform)) = q_mask.get_single_mut() {
+            audio.play(fb_assets.sfx_swooshing.clone());
+
             transform.translation.z = MASK_CENTER_FORE_Z_INDEX;
             let transition_tween = Tween::new(
                 EaseFunction::QuarticInOut,
