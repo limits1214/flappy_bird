@@ -1,0 +1,46 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          white 0%,
+          white 49%,
+          black 49%,
+          black 51%,
+          white 51%,
+          white 100%
+        ) repeat;
+        background-size: 20px 20px;
+      }
+      canvas {
+        background-color: white;
+      }
+    </style>
+    <title>Wasm Example</title>
+  </head>
+  <body>
+    <canvas id="target"></canvas>
+  </body>
+  <script>
+    function ffi_kv_get(key) {
+        return localStorage.getItem(key);
+    }
+    function ffi_kv_set(key, val) {
+        localStorage.setItem(key, val);
+    }
+    function ffi_greet_to_js() {
+        console.log('something');
+        window.ffi_greet_to_rust();
+    }
+  </script>
+  <script type="module">
+    import init, { start_app, ffi_greet_to_rust } from '/wasm/web.js'
+    window.ffi_greet_to_rust = ffi_greet_to_rust;
+
+    await init()
+    await start_app()
+  </script>
+</html>
