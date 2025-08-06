@@ -1,0 +1,24 @@
+[package]
+name = "web"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+bevy = { version = "0.14.1", features = [
+    # "android_shared_stdcxx",
+    # "png",
+    # "bevy_asset",
+    # "bevy_color",
+    # "bevy_sprite",
+    # "bevy_winit",
+    # "default_font",
+    # "multi_threaded",
+    "webgl2",
+    # "x11",
+], default-features = true }
+bevy_flappy_bird = { path = "..", default-features = false }
+wasm-bindgen = "0.2.100"
+# wasm-bindgen-futures = "0.4.43"
