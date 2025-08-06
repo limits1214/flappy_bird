@@ -25,9 +25,6 @@ jobs:
           chmod +x ./build_wasm.sh
           ./build_wasm.sh
 
-
-          cp ../index.html .
-
           cp -r ../assets .
 
           ls -al .
