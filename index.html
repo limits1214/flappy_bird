@@ -19,7 +19,7 @@
         background-color: white;
       }
     </style>
-    <title>Wasm Example</title>
+    <title>FlappyBird</title>
   </head>
   <body>
     <canvas id="target"></canvas>
@@ -37,7 +37,7 @@
     }
   </script>
   <script type="module">
-    import init, { start_app, ffi_greet_to_rust } from '/wasm/web.js'
+    import init, { start_app, ffi_greet_to_rust } from '/flappy_bird/wasm/web.js'
     window.ffi_greet_to_rust = ffi_greet_to_rust;
 
     await init()
