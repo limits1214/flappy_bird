@@ -9,7 +9,3 @@ wasm-bindgen --out-name $name \
 
 # wasm-opt -Oz --output optimized.wasm wasm/${name}_bg.wasm
 # mv optimized.wasm wasm/${name}_bg.wasm
-
-cp ../index.html .
-
-cp -r ../assets .
